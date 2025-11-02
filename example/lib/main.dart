@@ -1,3 +1,4 @@
+import 'package:example/pages/complex_example.dart';
 import 'package:flutter/material.dart';
 import 'package:example/pages/basic_example.dart';
 
@@ -54,6 +55,19 @@ class _MyHomePageState extends State<MyHomePage> {
                 ));
               },
               child: const Text("Basic Example"),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (BuildContext context) {
+                    return const ComplexExample();
+                  },
+                ));
+              },
+              child: const Text("Complex Example"),
             ),
           ],
         ),

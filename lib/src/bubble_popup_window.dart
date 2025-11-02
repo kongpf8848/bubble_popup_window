@@ -132,8 +132,8 @@ class _ArrowClipper extends CustomClipper<Path> {
     var height = size.height;
     Path path = Path();
     path.moveTo(0, 0);
-    path.lineTo(width / 2, height);
     path.lineTo(width, 0);
+    path.lineTo(width / 2, height);
     return path;
   }
 
