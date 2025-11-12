@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './direction/arrow_direction.dart';
+import 'arrow_direction.dart';
 import './bubble_shape_border.dart';
 
 class BubbleContainer extends StatelessWidget {
