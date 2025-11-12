@@ -10,7 +10,7 @@ class BasicExample extends StatefulWidget {
 }
 
 class _BasicExampleState extends State<BasicExample> {
-  final List<String> menuList = ["Share", "Save", "Cancel"];
+  final List<String> menuList = ["分享", "保存", "取消"];
   final GlobalKey moreKey = GlobalKey();
 
   @override
@@ -27,7 +27,7 @@ class _BasicExampleState extends State<BasicExample> {
             onPressed: () {
               _showBubblePopup(
                 moreKey.currentContext!,
-                BubblePopupPosition.bottomEnd,
+                BubbleDirection.bottomCenter,
               );
             },
           ),
@@ -39,71 +39,71 @@ class _BasicExampleState extends State<BasicExample> {
       body: Stack(
         children: <Widget>[
           Positioned(
-            left: 80,
+            left: 60,
             top: 120,
-            child: _button(BubblePopupPosition.topStart),
+            child: _button(BubbleDirection.topStart),
           ),
           Positioned(
             left: 180,
             top: 120,
-            child: _button(BubblePopupPosition.topCenter),
+            child: _button(BubbleDirection.topCenter),
           ),
           Positioned(
-            left: 280,
+            left: 300,
             top: 120,
-            child: _button(BubblePopupPosition.topEnd),
+            child: _button(BubbleDirection.topEnd),
           ),
           Positioned(
-            left: 80,
+            left: 60,
             top: 200,
-            child: _button(BubblePopupPosition.bottomStart),
+            child: _button(BubbleDirection.bottomStart),
           ),
           Positioned(
             left: 180,
             top: 200,
-            child: _button(BubblePopupPosition.bottomCenter),
+            child: _button(BubbleDirection.bottomCenter),
           ),
           Positioned(
-            left: 280,
+            left: 300,
             top: 200,
-            child: _button(BubblePopupPosition.bottomEnd),
+            child: _button(BubbleDirection.bottomEnd),
           ),
           Positioned(
-            left: 80,
+            left: 60,
             top: 280,
-            child: _button(BubblePopupPosition.leftStart),
+            child: _button(BubbleDirection.leftStart),
           ),
           Positioned(
             left: 180,
             top: 280,
-            child: _button(BubblePopupPosition.leftCenter),
+            child: _button(BubbleDirection.leftCenter),
           ),
           Positioned(
-            left: 280,
+            left: 300,
             top: 280,
-            child: _button(BubblePopupPosition.leftEnd),
+            child: _button(BubbleDirection.leftEnd),
           ),
           Positioned(
-            left: 80,
+            left: 60,
             top: 360,
-            child: _button(BubblePopupPosition.rightStart),
+            child: _button(BubbleDirection.rightStart),
           ),
           Positioned(
             left: 180,
             top: 360,
-            child: _button(BubblePopupPosition.rightCenter),
+            child: _button(BubbleDirection.rightCenter),
           ),
           Positioned(
-            left: 280,
+            left: 300,
             top: 360,
-            child: _button(BubblePopupPosition.rightEnd),
+            child: _button(BubbleDirection.rightEnd),
           ),
         ],
       ),
     );
   }
 
-  Widget _button(BubblePopupPosition position) {
+  Widget _button(BubbleDirection position) {
     return Builder(
       builder: (anchorContext) {
         return GestureDetector(
@@ -133,20 +133,20 @@ class _BasicExampleState extends State<BasicExample> {
     );
   }
 
-  void _showBubblePopup(
-      BuildContext context, BubblePopupPosition popupPosition) {
+  void _showBubblePopup(BuildContext context, BubbleDirection bubblePosition) {
     List<Widget> children = [];
 
-    Widget menuItem(String text, void Function() onTap) {
+    Widget menuItem(int index, void Function() onTap) {
       return GestureDetector(
         onTap: onTap,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 2),
-          width: 100,
+          width: 110,
           height: 40,
+          //color: Colors.primaries[index % Colors.primaries.length],
           alignment: Alignment.center,
           child: Text(
-            text,
+            menuList[index],
             style: const TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.normal,
@@ -159,11 +159,13 @@ class _BasicExampleState extends State<BasicExample> {
 
     for (int i = 0; i < menuList.length; i++) {
       children.add(menuItem(
-        menuList[i],
+        i,
         () {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("你点击了:${menuList[i]}"),
+          ));
           //close popup
           Navigator.of(context).pop();
-          print("+++++++++onMenuTap:${menuList[i]}");
         },
       ));
       if (i != menuList.length - 1) {
@@ -176,26 +178,22 @@ class _BasicExampleState extends State<BasicExample> {
     }
     BubblePopupWindow.show(
       anchorContext: context,
-      popupPosition: popupPosition,
       miniEdgeMargin: const EdgeInsets.only(left: 10, right: 10),
-      arrowColor: Colors.white,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(6),
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 6, // Shadow range
-              spreadRadius: 1, // Shadow density
-              color: const Color(0xFF000000).withOpacity(0.2), // Shadow color
-              offset: const Offset(0, 2),
-            ),
-          ],
+      direction: bubblePosition,
+      color: Colors.white,
+      border: const BorderSide(color: Colors.blue),
+      radius: BorderRadius.circular(6),
+      shadows: [
+        BoxShadow(
+          blurRadius: 6, // Shadow range
+          spreadRadius: 1, // Shadow density
+          color: const Color(0xff000000).withOpacity(0.2), // Shadow color
+          offset: const Offset(0, 2),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: children,
-        ),
+      ],
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: children,
       ),
     );
   }

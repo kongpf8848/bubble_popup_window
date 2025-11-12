@@ -67,12 +67,7 @@ class _ComplexExampleState extends State<ComplexExample> {
           Builder(builder: (context) {
             return GestureDetector(
               onTap: () {
-                var menu = Container(
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF4C4C4C),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: IntrinsicWidth(
+                var menu = IntrinsicWidth(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -114,15 +109,16 @@ class _ComplexExampleState extends State<ComplexExample> {
                           )
                           .toList(),
                     ),
-                  ),
                 );
                 BubblePopupWindow.show(
-                    anchorContext: context,
-                    child: menu,
-                    popupPosition: BubblePopupPosition.bottomEnd,
-                    arrowColor: const Color(
-                      0xFF4C4C4C,
-                    ));
+                  anchorContext: context,
+                  child: menu,
+                  direction: BubbleDirection.bottomEnd,
+                  color: const Color(
+                    0xFF4C4C4C,
+                  ),
+                  radius: BorderRadius.circular(4),
+                );
               },
               child: const Icon(Icons.add_circle_outline, color: Colors.black),
             );
@@ -172,11 +168,8 @@ class MessageContent extends StatelessWidget {
   ];
 
   Widget _buildLongPressMenu() {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(5),
-      child: Container(
+    return Container(
         width: 220,
-        color: const Color(0xFF4C4C4C),
         child: GridView.count(
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
           crossAxisCount: 5,
@@ -207,7 +200,6 @@ class MessageContent extends StatelessWidget {
               )
               .toList(),
         ),
-      ),
     );
   }
 
@@ -246,11 +238,13 @@ class MessageContent extends StatelessWidget {
               onLongPress: () {
                 var menu = _buildLongPressMenu();
                 BubblePopupWindow.show(
-                    anchorContext: context,
-                    child: menu,
-                    popupPosition: BubblePopupPosition.topCenter,
-                    arrowColor: const Color(0xFF4C4C4C),
-                    miniEdgeMargin: const EdgeInsets.only(left: 10, right: 10));
+                  anchorContext: context,
+                  child: menu,
+                  direction: BubbleDirection.bottomCenter,
+                  color: const Color(0xFF4C4C4C),
+                  radius: BorderRadius.circular(4),
+                  miniEdgeMargin: const EdgeInsets.only(left: 10, right: 10),
+                );
               },
               child: Container(
                 padding: const EdgeInsets.all(10),

@@ -1,64 +1,9 @@
-import 'dart:math' as math;
+import 'package:bubble_popup_window/bubble_popup_window.dart';
+import 'package:bubble_popup_window/src/direction/direction_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 const Duration _kDuration = Duration(milliseconds: 300);
-
-enum BubblePopupPosition {
-  //弹窗在锚点上方，和锚点左边对齐
-  topStart,
-  //弹窗在锚点上方，和锚点居中对齐
-  topCenter,
-  //弹窗在锚点上方，和锚点右边对齐
-  topEnd,
-
-  //弹窗在锚点下方，和锚点左边对齐
-  bottomStart,
-  //弹窗在锚点下方，和锚点居中对齐
-  bottomCenter,
-  //弹窗在锚点下方，和锚点右边对齐
-  bottomEnd,
-
-  //弹窗在锚点左侧，和锚点顶部对齐
-  leftStart,
-  //弹窗在锚点左侧，和锚点居中对齐
-  leftCenter,
-  //弹窗在锚点左侧，和锚点底部对齐
-  leftEnd,
-
-  //弹窗在锚点右侧，和锚点顶部对齐
-  rightStart,
-  //弹窗在锚点右侧，和锚点居中对齐
-  rightCenter,
-  //弹窗在锚点右侧，和锚点底部对齐
-  rightEnd;
-
-  double angle() {
-    switch (this) {
-      case BubblePopupPosition.topStart:
-      case BubblePopupPosition.topCenter:
-      case BubblePopupPosition.topEnd:
-        return 0.0;
-      case BubblePopupPosition.bottomStart:
-      case BubblePopupPosition.bottomCenter:
-      case BubblePopupPosition.bottomEnd:
-        return math.pi;
-      case BubblePopupPosition.leftStart:
-      case BubblePopupPosition.leftCenter:
-      case BubblePopupPosition.leftEnd:
-        return -math.pi / 2;
-      case BubblePopupPosition.rightStart:
-      case BubblePopupPosition.rightCenter:
-      case BubblePopupPosition.rightEnd:
-        return math.pi / 2;
-    }
-  }
-}
-
-enum _Id {
-  pop,
-  arrow,
-}
 
 class BubblePopupWindow {
   static void show({
@@ -67,7 +12,17 @@ class BubblePopupWindow {
     //弹窗布局，用户自定义
     required Widget child,
     //弹窗方向
-    BubblePopupPosition popupPosition = BubblePopupPosition.bottomCenter,
+    BubbleDirection direction = BubbleDirection.bottomCenter,
+    //弹窗颜色
+    Color color = Colors.white,
+    //弹窗圆角半径
+    BorderRadius? radius = BorderRadius.zero,
+    //弹窗边框
+    BorderSide border = BorderSide.none,
+    //弹窗阴影
+    List<BoxShadow>? shadows,
+    //弹窗内边距
+    EdgeInsetsGeometry? padding,
     //弹窗距离锚点间距
     double gap = 0.0,
     //弹窗距离屏幕边缘最小间距
@@ -78,99 +33,65 @@ class BubblePopupWindow {
     bool dismissOnTouchOutside = true,
     //是否显示箭头
     bool showArrow = true,
-    //箭头大小
-    Size arrowSize = const Size(10.0, 5.0),
-    //箭头颜色
-    Color arrowColor = Colors.white,
+    //箭头宽度
+    double arrowWidth = 10.0,
+    //箭头高度
+    double arrowHeight = 5.0,
   }) {
     final routeLayout = _BubblePopupRouteLayout(
       anchorContext: anchorContext,
-      popupPosition: popupPosition,
+      direction: direction,
       gap: gap,
       miniEdgeMargin: miniEdgeMargin,
       showArrow: showArrow,
-      arrowSize: arrowSize,
-      arrowColor: arrowColor,
+      arrowWidth: arrowWidth,
+      arrHeight: arrowHeight,
+      arrowColor: color,
     );
-    var layout = CustomMultiChildLayout(
-      delegate: routeLayout,
-      children: [
-        LayoutId(
-          id: _Id.pop,
-          child: Material(
-            color: Colors.transparent,
-            child: child,
-          ),
-        ),
-        if (showArrow)
-          LayoutId(
-            id: _Id.arrow,
-            child: _Arrow(
-              positionNotifier: routeLayout.positionNotifier,
-              arrowSize: arrowSize,
-              arrowColor: arrowColor,
-            ),
-          ),
-      ],
+
+    var widget = ValueListenableBuilder(
+      valueListenable: routeLayout.offsetNotifier,
+      builder: (BuildContext context, Offset offset, Widget? child) {
+        var direction = routeLayout.lastDireciton ?? routeLayout.direction;
+        double? arrowOffset;
+        if (offset != Offset.zero) {
+          if (direction.isVertical) {
+            arrowOffset = routeLayout.anchorRect.center.dx - offset.dx;
+          } else if (direction.isHorizontal) {
+            arrowOffset = routeLayout.anchorRect.center.dy - offset.dy;
+          }
+        }
+        return BubbleContainer(
+          borderRadius: radius,
+          border: border,
+          shadows: shadows,
+          padding: padding,
+          color: color,
+          showArrow: showArrow,
+          arrowWidth: arrowWidth,
+          arrowHeight: arrowHeight,
+          arrowRadius: 0.0,
+          arrowOffset: arrowOffset,
+          arrowDirection: bubbleToArrow(direction),
+          child: child,
+        );
+      },
+      child: Material(
+        color: Colors.transparent,
+        type: MaterialType.transparency,
+        child: child,
+      ),
     );
+
     Navigator.of(anchorContext).push(
       _BubblePopupRoute(
         maskColor: maskColor,
         dismissOnTouchOutside: dismissOnTouchOutside,
-        layout: layout,
+        child: CustomSingleChildLayout(
+          delegate: routeLayout,
+          child: widget,
+        ),
       ),
-    );
-  }
-}
-
-class _ArrowClipper extends CustomClipper<Path> {
-  const _ArrowClipper();
-
-  @override
-  Path getClip(Size size) {
-    var width = size.width;
-    var height = size.height;
-    Path path = Path();
-    path.moveTo(0, 0);
-    path.lineTo(width, 0);
-    path.lineTo(width / 2, height);
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) {
-    return true;
-  }
-}
-
-class _Arrow extends StatelessWidget {
-  final ValueNotifier<BubblePopupPosition> positionNotifier;
-  final Size arrowSize;
-  final Color arrowColor;
-
-  const _Arrow({
-    required this.positionNotifier,
-    required this.arrowSize,
-    required this.arrowColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<BubblePopupPosition>(
-      valueListenable: positionNotifier,
-      builder: (context, value, child) {
-        return Transform.rotate(
-          angle: value.angle(),
-          child: ClipPath(
-            clipper: const _ArrowClipper(),
-            child: Container(
-              width: arrowSize.width,
-              height: arrowSize.height,
-              color: arrowColor,
-            ),
-          ),
-        );
-      },
     );
   }
 }
@@ -178,12 +99,12 @@ class _Arrow extends StatelessWidget {
 class _BubblePopupRoute<T> extends PopupRoute<T> {
   final Color? maskColor;
   final bool dismissOnTouchOutside;
-  final Widget layout;
+  final Widget child;
 
   _BubblePopupRoute({
     required this.maskColor,
     required this.dismissOnTouchOutside,
-    required this.layout,
+    required this.child,
   });
 
   @override
@@ -201,32 +122,49 @@ class _BubblePopupRoute<T> extends PopupRoute<T> {
   @override
   Widget buildPage(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation) {
-    return layout;
+    print("+++++++++++++++++buildPage:$child");
+    return child;
+  }
+
+  @override
+  Widget buildTransitions(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child) {
+    print("+++++++++++++++++buildTransitions:$child");
+    return super
+        .buildTransitions(context, animation, secondaryAnimation, child);
+  }
+
+  @override
+  TickerFuture didPush() {
+    print("++++++++++++++++didPush");
+    return super.didPush();
   }
 }
 
-class _BubblePopupRouteLayout extends MultiChildLayoutDelegate {
+class _BubblePopupRouteLayout extends SingleChildLayoutDelegate {
   final BuildContext anchorContext;
-  BubblePopupPosition popupPosition;
+  final BubbleDirection direction;
   final double gap;
   final EdgeInsets miniEdgeMargin;
   final bool showArrow;
-  final Size arrowSize;
+  final double arrowWidth;
+  final double arrHeight;
   final Color arrowColor;
   Rect anchorRect = Rect.zero;
+  Size childSize = Size.zero;
 
-  final ValueNotifier<BubblePopupPosition> _positionNotifier =
-      ValueNotifier(BubblePopupPosition.bottomCenter);
+  BubbleDirection? lastDireciton;
 
-  ValueNotifier<BubblePopupPosition> get positionNotifier => _positionNotifier;
+  final ValueNotifier<Offset> offsetNotifier = ValueNotifier(Offset.zero);
 
   _BubblePopupRouteLayout({
     required this.anchorContext,
-    required this.popupPosition,
+    required this.direction,
     required this.gap,
     required this.miniEdgeMargin,
     required this.showArrow,
-    required this.arrowSize,
+    required this.arrowWidth,
+    required this.arrHeight,
     required this.arrowColor,
   }) {
     final RenderBox anchor = anchorContext.findRenderObject()! as RenderBox;
@@ -237,217 +175,90 @@ class _BubblePopupRouteLayout extends MultiChildLayoutDelegate {
     final Offset offset = anchor.localToGlobal(Offset.zero, ancestor: overlay);
     anchorRect = Rect.fromLTWH(
         offset.dx, offset.dy, anchor.size.width, anchor.size.height);
-    positionNotifier.value = popupPosition;
+    lastDireciton = direction;
   }
 
   @override
-  void performLayout(Size size) {
+  bool shouldRelayout(covariant _BubblePopupRouteLayout oldDelegate) {
+    return true;
+  }
+
+  @override
+  Size getSize(BoxConstraints constraints) {
+    print(
+        "++++++++++++++++BubblePopupRouteLayout getSize，constraints:$constraints");
+    return super.getSize(constraints);
+  }
+
+  @override
+  BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
+    print(
+        "++++++++++++++++BubblePopupRouteLayout getConstraintsForChild，constraints:$constraints");
+    return BoxConstraints.loose(constraints.biggest);
+  }
+
+  @override
+  Offset getPositionForChild(Size size, Size childSize) {
+    print(
+        "++++++++++++++++BubblePopupRouteLayout getPositionForChild，Size:$size,childSize:$childSize");
+
     EdgeInsets systemPadding =
         MediaQuery.of(Navigator.of(anchorContext).overlay!.context).padding;
     EdgeInsets padding = systemPadding + miniEdgeMargin;
     Rect boundaryRect = Rect.fromLTRB(padding.left, padding.top,
         size.width - padding.right, size.height - padding.bottom);
-    Rect outRect = getOutRect(boundaryRect);
-    BubblePopupPosition newPopupPosition = popupPosition;
-
-    //定位pop
-    if (hasChild(_Id.pop)) {
-      var popSize = layoutChild(_Id.pop, BoxConstraints.loose(size));
-      var popRect = getRect(_Id.pop, popupPosition, popSize, arrowHeight + gap);
-      newPopupPosition = _adjustPosition(popupPosition, outRect, popRect);
-      if (newPopupPosition != popupPosition) {
-        popRect =
-            getRect(_Id.pop, newPopupPosition, popSize, arrowHeight + gap);
-      }
-      popRect = _keepInside(boundaryRect, popRect);
-
-      positionChild(_Id.pop, popRect.topLeft);
+    var popRect = calculateRect(direction, childSize, gap);
+    lastDireciton = _adjustDirection(direction, boundaryRect, popRect);
+    if (lastDireciton != direction) {
+      popRect = calculateRect(lastDireciton!, childSize, gap);
     }
-
+    popRect = _keepInside(boundaryRect, popRect);
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      _positionNotifier.value = newPopupPosition;
+      offsetNotifier.value = popRect.topLeft;
     });
-
-    //定位arrow
-    if (hasChild(_Id.arrow)) {
-      var arrowSize = layoutChild(_Id.arrow, BoxConstraints.loose(size));
-      var arrowRect = getRect(_Id.arrow, newPopupPosition, arrowSize, gap);
-      positionChild(_Id.arrow, arrowRect.topLeft);
-    }
+    return popRect.topLeft;
   }
 
-  @override
-  bool shouldRelayout(covariant MultiChildLayoutDelegate oldDelegate) {
-    return true;
-  }
-
-  double get arrowHeight => showArrow ? arrowSize.height : 0.0;
-
-  ///获取pop所在的边界范围
-  Rect getOutRect(Rect boundaryRect) {
-    switch (popupPosition) {
-      case BubblePopupPosition.topStart:
-        return Rect.fromLTRB(
-          anchorRect.left,
-          boundaryRect.top,
-          boundaryRect.right,
-          anchorRect.top - arrowHeight,
-        );
-      case BubblePopupPosition.topCenter:
-        return Rect.fromLTRB(
-          boundaryRect.left,
-          boundaryRect.top,
-          boundaryRect.right,
-          anchorRect.top - arrowHeight,
-        );
-      case BubblePopupPosition.topEnd:
-        return Rect.fromLTRB(
-          boundaryRect.left,
-          boundaryRect.top,
-          anchorRect.right,
-          anchorRect.top - arrowHeight,
-        );
-      case BubblePopupPosition.bottomStart:
-        return Rect.fromLTRB(
-          anchorRect.left,
-          anchorRect.bottom + arrowHeight,
-          boundaryRect.right,
-          boundaryRect.bottom,
-        );
-      case BubblePopupPosition.bottomCenter:
-        return Rect.fromLTRB(
-          boundaryRect.left,
-          anchorRect.bottom + arrowHeight,
-          boundaryRect.right,
-          boundaryRect.bottom,
-        );
-      case BubblePopupPosition.bottomEnd:
-        return Rect.fromLTRB(
-          boundaryRect.left,
-          anchorRect.bottom + arrowHeight,
-          anchorRect.right,
-          boundaryRect.bottom,
-        );
-      case BubblePopupPosition.leftStart:
-        return Rect.fromLTRB(
-          boundaryRect.left,
-          anchorRect.top,
-          anchorRect.left - arrowHeight,
-          boundaryRect.bottom,
-        );
-      case BubblePopupPosition.leftCenter:
-        return Rect.fromLTRB(
-          boundaryRect.left,
-          boundaryRect.top,
-          anchorRect.left - arrowHeight,
-          boundaryRect.bottom,
-        );
-      case BubblePopupPosition.leftEnd:
-        return Rect.fromLTRB(
-          boundaryRect.left,
-          boundaryRect.top,
-          anchorRect.left - arrowHeight,
-          anchorRect.bottom,
-        );
-      case BubblePopupPosition.rightStart:
-        return Rect.fromLTRB(
-          anchorRect.right + arrowHeight,
-          anchorRect.top,
-          boundaryRect.right,
-          boundaryRect.bottom,
-        );
-      case BubblePopupPosition.rightCenter:
-        return Rect.fromLTRB(
-          anchorRect.right + arrowHeight,
-          boundaryRect.top,
-          boundaryRect.right,
-          boundaryRect.bottom,
-        );
-      case BubblePopupPosition.rightEnd:
-        return Rect.fromLTRB(
-          anchorRect.right + arrowHeight,
-          boundaryRect.top,
-          anchorRect.right,
-          boundaryRect.bottom,
-        );
-    }
-  }
-
-  Rect getRect(
-      _Id id, BubblePopupPosition popupPosition, Size targetSize, double gap) {
+  //计算弹窗展示区域
+  Rect calculateRect(BubbleDirection direction, Size targetSize, double gap) {
     var dx = (anchorRect.width + targetSize.width) / 2 + gap;
     var dy = (anchorRect.height + targetSize.height) / 2 + gap;
-
-    if (id == _Id.arrow &&
-        (popupPosition == BubblePopupPosition.leftStart ||
-            popupPosition == BubblePopupPosition.leftCenter ||
-            popupPosition == BubblePopupPosition.leftEnd ||
-            popupPosition == BubblePopupPosition.rightStart ||
-            popupPosition == BubblePopupPosition.rightCenter ||
-            popupPosition == BubblePopupPosition.rightEnd)) {
-      dx = (anchorRect.width + targetSize.height) / 2 + gap;
-    }
     Offset offset;
-    BubblePopupPosition position = popupPosition;
-    if (id == _Id.arrow) {
-      switch (position) {
-        case BubblePopupPosition.topStart:
-        case BubblePopupPosition.topCenter:
-        case BubblePopupPosition.topEnd:
-          position = BubblePopupPosition.topCenter;
-          break;
-        case BubblePopupPosition.bottomStart:
-        case BubblePopupPosition.bottomCenter:
-        case BubblePopupPosition.bottomEnd:
-          position = BubblePopupPosition.bottomCenter;
-          break;
-        case BubblePopupPosition.leftStart:
-        case BubblePopupPosition.leftCenter:
-        case BubblePopupPosition.leftEnd:
-          position = BubblePopupPosition.leftCenter;
-          break;
-        case BubblePopupPosition.rightStart:
-        case BubblePopupPosition.rightCenter:
-        case BubblePopupPosition.rightEnd:
-          position = BubblePopupPosition.rightCenter;
-          break;
-      }
-    }
-    switch (position) {
-      case BubblePopupPosition.topStart:
+    switch (direction) {
+      case BubbleDirection.topStart:
         offset = Offset((targetSize.width - anchorRect.width) / 2, -dy);
         break;
-      case BubblePopupPosition.topCenter:
+      case BubbleDirection.topCenter:
         offset = Offset(0, -dy);
         break;
-      case BubblePopupPosition.topEnd:
+      case BubbleDirection.topEnd:
         offset = Offset((anchorRect.width - targetSize.width) / 2, -dy);
         break;
-      case BubblePopupPosition.bottomStart:
+      case BubbleDirection.bottomStart:
         offset = Offset((targetSize.width - anchorRect.width) / 2, dy);
         break;
-      case BubblePopupPosition.bottomCenter:
+      case BubbleDirection.bottomCenter:
         offset = Offset(0, dy);
         break;
-      case BubblePopupPosition.bottomEnd:
+      case BubbleDirection.bottomEnd:
         offset = Offset((anchorRect.width - targetSize.width) / 2, dy);
         break;
-      case BubblePopupPosition.leftStart:
+      case BubbleDirection.leftStart:
         offset = Offset(-dx, (targetSize.height - anchorRect.height) / 2);
         break;
-      case BubblePopupPosition.leftCenter:
+      case BubbleDirection.leftCenter:
         offset = Offset(-dx, 0);
         break;
-      case BubblePopupPosition.leftEnd:
+      case BubbleDirection.leftEnd:
         offset = Offset(-dx, (anchorRect.height - targetSize.height) / 2);
         break;
-      case BubblePopupPosition.rightStart:
+      case BubbleDirection.rightStart:
         offset = Offset(dx, (targetSize.height - anchorRect.height) / 2);
         break;
-      case BubblePopupPosition.rightCenter:
+      case BubbleDirection.rightCenter:
         offset = Offset(dx, 0);
         break;
-      case BubblePopupPosition.rightEnd:
+      case BubbleDirection.rightEnd:
         offset = Offset(dx, (anchorRect.height - targetSize.height) / 2);
         break;
     }
@@ -457,71 +268,39 @@ class _BubblePopupRouteLayout extends MultiChildLayoutDelegate {
   }
 
   //调整弹窗方向
-  BubblePopupPosition _adjustPosition(
-      BubblePopupPosition position, Rect container, Rect child) {
-    switch (popupPosition) {
-      case BubblePopupPosition.topStart:
+  BubbleDirection _adjustDirection(
+      BubbleDirection direction, Rect container, Rect child) {
+    switch (direction) {
+      case BubbleDirection.topStart:
+      case BubbleDirection.topCenter:
+      case BubbleDirection.topEnd:
         if (child.top < container.top) {
-          return BubblePopupPosition.bottomStart;
+          return ~direction;
         }
         break;
-      case BubblePopupPosition.topCenter:
-        if (child.top < container.top) {
-          return BubblePopupPosition.bottomCenter;
-        }
-        break;
-      case BubblePopupPosition.topEnd:
-        if (child.top < container.top) {
-          return BubblePopupPosition.bottomEnd;
-        }
-        break;
-      case BubblePopupPosition.bottomStart:
+      case BubbleDirection.bottomStart:
+      case BubbleDirection.bottomCenter:
+      case BubbleDirection.bottomEnd:
         if (child.bottom > container.bottom) {
-          return BubblePopupPosition.topStart;
+          return ~direction;
         }
         break;
-      case BubblePopupPosition.bottomCenter:
-        if (child.bottom > container.bottom) {
-          return BubblePopupPosition.topCenter;
-        }
-        break;
-      case BubblePopupPosition.bottomEnd:
-        if (child.bottom > container.bottom) {
-          return BubblePopupPosition.topEnd;
-        }
-        break;
-      case BubblePopupPosition.leftStart:
+      case BubbleDirection.leftStart:
+      case BubbleDirection.leftCenter:
+      case BubbleDirection.leftEnd:
         if (child.left < container.left) {
-          return BubblePopupPosition.rightStart;
+          return ~direction;
         }
         break;
-      case BubblePopupPosition.leftCenter:
-        if (child.left < container.left) {
-          return BubblePopupPosition.rightCenter;
-        }
-        break;
-      case BubblePopupPosition.leftEnd:
-        if (child.left < container.left) {
-          return BubblePopupPosition.rightEnd;
-        }
-        break;
-      case BubblePopupPosition.rightStart:
+      case BubbleDirection.rightStart:
+      case BubbleDirection.rightCenter:
+      case BubbleDirection.rightEnd:
         if (child.right > container.right) {
-          return BubblePopupPosition.leftStart;
-        }
-        break;
-      case BubblePopupPosition.rightCenter:
-        if (child.right > container.right) {
-          return BubblePopupPosition.leftCenter;
-        }
-        break;
-      case BubblePopupPosition.rightEnd:
-        if (child.right > container.right) {
-          return BubblePopupPosition.leftEnd;
+          return ~direction;
         }
         break;
     }
-    return position;
+    return direction;
   }
 
   //保持child在parent范围内
