@@ -15,7 +15,7 @@ Flutter气泡弹窗库，提供带箭头指示器的浮动弹窗组件。
 
 ```yaml
 dependencies:
-  bubble_popup_window: ^0.0.1
+  bubble_popup_window: ^0.0.2
 ```
 
 ## 使用
@@ -38,23 +38,22 @@ void _showToolTip(BuildContext anchorContext) {
     //锚点上下文
     anchorContext: anchorContext,
     //弹窗布局，用户自定义
-    child: Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
+    child: const Text(
+      '这是一个气泡弹窗',
+      style: TextStyle(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: const Text(
-        '这是一个气泡弹窗',
-        style: TextStyle(
-          color: Colors.black,
-          fontSize: 14,
-          fontWeight: FontWeight.normal,
-        ),
+        fontSize: 14,
+        fontWeight: FontWeight.normal,
       ),
     ),
     //弹窗方向
-    popupPosition: BubblePopupPosition.bottomCenter,
+    direction: BubbleDirection.bottomCenter,
+    //弹窗颜色
+    color: Colors.red,
+    //弹窗圆角半径
+    radius: BorderRadius.circular(8),
+    //弹窗内边距
+    padding: const EdgeInsets.all(16),
     //弹窗距离锚点间距
     gap: 4.0,
     //弹窗距离屏幕边缘最小间距
@@ -65,10 +64,10 @@ void _showToolTip(BuildContext anchorContext) {
     dismissOnTouchOutside: true,
     //是否显示箭头
     showArrow: true,
-    //箭头大小
-    arrowSize: const Size(12, 6),
-    //箭头颜色
-    arrowColor: Colors.white,
+    //箭头宽度
+    arrowWidth: 12.0,
+    //箭头高度
+    arrowHeight: 6.0,
   );
 }
 
@@ -76,29 +75,35 @@ void _showToolTip(BuildContext anchorContext) {
 
 ## 参数说明
 
-| 参数名 | 类型 | 默认值 | 描述 |
-|:--------|:------|:--------|:------|
-| `anchorContext` | `BuildContext` | 无 | 锚点上下文 |
-| `child` | `Widget` | 无 | 弹窗内容，用户自定义 |
-| `popupPosition` | `BubblePopupPosition` | `BubblePopupPosition.bottomCenter` | 弹窗方向 |
-| `gap` | `double` | `0.0` | 弹窗距离锚点的间距 |
-| `maskColor` | `Color?` | `null` | 遮罩层颜色 |
-| `dismissOnTouchOutside` | `bool` | `true` | 点击弹窗外部是否关闭弹窗 |
-| `miniEdgeMargin` | `EdgeInsets` | `EdgeInsets.zero` | 弹窗距离屏幕边缘最小间距 |
-| `showArrow` | `bool` | `true` | 是否显示箭头 |
-| `arrowSize` | `Size` | `Size(10.0, 5.0)` | 箭头大小 |
-| `arrowColor` | `Color` | `Colors.white` | 箭头颜色 |
+| 参数名                     | 类型                    | 默认值                            | 描述           |
+|:------------------------|:----------------------|:-------------------------------|:-------------|
+| `anchorContext`         | `BuildContext`        | 无                              | 锚点上下文        |
+| `child`                 | `Widget`              | 无                              | 弹窗内容，用户自定义   |
+| `direction`         | `BubbleDirection`     | `BubbleDirection.bottomCenter` | 弹窗方向         |
+| `color`         | `Color`               | `Colors.white`                 | 弹窗颜色         |
+| `radius`         | `BorderRadius`        | `BorderRadius.zero`            | 弹窗圆角半径        |
+| `border`         | `BorderSide`          | `BorderSide.none`              | 弹窗边框         |
+| `shadows`         | `List<BoxShadow>?`    | 无                              | 弹窗阴影         |
+| `padding`         | `EdgeInsetsGeometry?` | 无                              | 弹窗内边距         |
+| `gap`                   | `double`              | `0.0`                          | 弹窗距离锚点的间距    |
+| `maskColor`             | `Color?`              | `null`                         | 遮罩层颜色        |
+| `dismissOnTouchOutside` | `bool`                | `true`                         | 点击弹窗外部是否关闭弹窗 |
+| `miniEdgeMargin`        | `EdgeInsets`          | `EdgeInsets.zero`              | 弹窗距离屏幕边缘最小间距 |
+| `showArrow`             | `bool`                | `true`                         | 是否显示箭头       |
+| `arrowWidth`            | `Double`              | `10.0`                         | 箭头宽度         |
+| `arrowHeight`           | `Double`              | `5.0`                          | 箭头高度         |
 
-## 弹窗位置选项
 
-`BubblePopupPosition` 枚举提供了以下12种位置选项：
+## 弹窗方向选项
+
+`BubbleDirection` 枚举提供了以下12种位置选项：
 
 - **上方**: `topStart`, `topCenter`, `topEnd`
 - **下方**: `bottomStart`, `bottomCenter`, `bottomEnd`
 - **左侧**: `leftStart`, `leftCenter`, `leftEnd`
 - **右侧**: `rightStart`, `rightCenter`, `rightEnd`
 ```dart
-enum BubblePopupPosition {
+enum BubbleDirection {
   //弹窗在锚点上方，和锚点左边对齐
   topStart,
   //弹窗在锚点上方，和锚点居中对齐
