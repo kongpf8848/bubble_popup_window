@@ -6,7 +6,6 @@ class BubbleContainer extends StatelessWidget {
   final BorderRadius? borderRadius;
   final BorderSide border;
   final bool showArrow;
-  final bool forceArrowPadding;
   final ArrowDirection arrowDirection;
   final double arrowWidth;
   final double arrowHeight;
@@ -43,7 +42,6 @@ class BubbleContainer extends StatelessWidget {
     this.border = BorderSide.none,
     this.borderRadius = BorderRadius.zero,
     this.showArrow = true,
-    this.forceArrowPadding=false,
     required this.arrowDirection,
     this.arrowWidth = 10.0,
     this.arrowHeight = 5.0,
@@ -54,7 +52,7 @@ class BubbleContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     EdgeInsets bubblePadding = EdgeInsets.zero;
-    if (showArrow || forceArrowPadding) {
+    if (showArrow) {
       if (arrowDirection == ArrowDirection.top) {
         bubblePadding = EdgeInsets.only(top: arrowHeight);
       } else if (arrowDirection == ArrowDirection.bottom) {
