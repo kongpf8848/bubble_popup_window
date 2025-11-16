@@ -29,24 +29,20 @@ class _ComplexExampleState extends State<ComplexExample> {
   @override
   void initState() {
     messages = [
-      ChatModel('在吗？'),
-      ChatModel('咋了？找我有事吗？', isMe: true),
-      ChatModel('没啥就像看看你在不在'),
-      ChatModel('到底啥事你说啊，我还在工作呢', isMe: true),
-      ChatModel('你好', isMe: true),
-      ChatModel('下面开始介绍Flutter'),
+      ChatModel('我来了'),
+      ChatModel('哈哈', isMe: true),
+      ChatModel('好久不见，最近怎么样?'),
+      ChatModel('还行，最近出去旅游了', isMe: true),
+      ChatModel('去哪里了啊？', isMe: false),
       ChatModel(
-          'Flutter是谷歌的移动UI框架，可以快速在iOS和Android上构建高质量的原生用户界面。 Flutter可以与现有的代码一起工作。在全世界，Flutter正在被越来越多的开发者和组织使用，并且Flutter是完全免费、开源的。'),
-      ChatModel('就这？？？', isMe: true),
-      ChatModel('在吗？'),
-      ChatModel('咋了？找我有事吗？', isMe: true),
-      ChatModel('没啥就像看看你在不在'),
-      ChatModel('到底啥事你说啊，我还在工作呢', isMe: true),
-      ChatModel('？', isMe: true),
-      ChatModel('下面开始介绍Flutter'),
-      ChatModel(
-          'Flutter是谷歌的移动UI框架，可以快速在iOS和Android上构建高质量的原生用户界面。 Flutter可以与现有的代码一起工作。在全世界，Flutter正在被越来越多的开发者和组织使用，并且Flutter是完全免费、开源的。'),
-      ChatModel('就这？？？', isMe: true),
+          '我上周去北京玩了刚回来，当时玩的非常开心，特地总结出这篇全新北京旅游省钱攻略提供给你，希望给你带来有价值的参考。我们一共玩了3天，去了故宫、八达岭长城、圆明园、颐和园、天坛、奥林匹克公园等网红景点。',
+          isMe: true),
+      ChatModel('我也想去，但没有时间', isMe: false),
+      ChatModel('明白', isMe: true),
+      ChatModel('你就是太忙了', isMe: true),
+      ChatModel('过几天我准备去巴厘岛玩玩', isMe: true),
+      ChatModel('羡慕你', isMe: false),
+      ChatModel('一起去啊，来一次说走就走的旅行', isMe: true),
     ];
     menuItems = [
       ItemModel('发起群聊', Icons.chat_bubble),
@@ -60,7 +56,7 @@ class _ComplexExampleState extends State<ComplexExample> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F4F4),
+      backgroundColor: const Color(0xFFF2F2F2),
       appBar: AppBar(
         title: const Text('Complex Example'),
         actions: <Widget>[
@@ -68,47 +64,47 @@ class _ComplexExampleState extends State<ComplexExample> {
             return GestureDetector(
               onTap: () {
                 var menu = IntrinsicWidth(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: menuItems
-                          .map(
-                            (item) => GestureDetector(
-                              behavior: HitTestBehavior.translucent,
-                              onTap: () {
-                                print("onTap");
-                                Navigator.of(context).pop();
-                              },
-                              child: Container(
-                                height: 40,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 20),
-                                child: Row(
-                                  children: <Widget>[
-                                    Icon(
-                                      item.icon,
-                                      size: 16,
-                                      color: Colors.white,
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                        margin: const EdgeInsets.only(left: 10),
-                                        child: Text(
-                                          item.title,
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 12,
-                                          ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: menuItems
+                        .map(
+                          (item) => GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            onTap: () {
+                              print("onTap");
+                              Navigator.of(context).pop();
+                            },
+                            child: Container(
+                              height: 40,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              child: Row(
+                                children: <Widget>[
+                                  Icon(
+                                    item.icon,
+                                    size: 16,
+                                    color: Colors.white,
+                                  ),
+                                  Expanded(
+                                    child: Container(
+                                      margin: const EdgeInsets.only(left: 10),
+                                      child: Text(
+                                        item.title,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
                                         ),
                                       ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
-                          )
-                          .toList(),
-                    ),
+                          ),
+                        )
+                        .toList(),
+                  ),
                 );
                 BubblePopupWindow.show(
                   anchorContext: context,
@@ -169,50 +165,50 @@ class MessageContent extends StatelessWidget {
 
   Widget _buildLongPressMenu() {
     return Container(
-        width: 220,
-        child: GridView.count(
-          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-          crossAxisCount: 5,
-          crossAxisSpacing: 0,
-          mainAxisSpacing: 10,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          children: menuItems
-              .map(
-                (item) => Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Icon(
-                      item.icon,
-                      size: 20,
-                      color: Colors.white,
+      width: 220,
+      child: GridView.count(
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+        crossAxisCount: 5,
+        crossAxisSpacing: 0,
+        mainAxisSpacing: 10,
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        children: menuItems
+            .map(
+              (item) => Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Icon(
+                    item.icon,
+                    size: 20,
+                    color: Colors.white,
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 2),
+                    child: Text(
+                      item.title,
+                      style: const TextStyle(color: Colors.white, fontSize: 12),
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 2),
-                      child: Text(
-                        item.title,
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 12),
-                      ),
-                    ),
-                  ],
-                ),
-              )
-              .toList(),
-        ),
+                  ),
+                ],
+              ),
+            )
+            .toList(),
+      ),
     );
   }
 
   Widget _buildAvatar(bool isMe, double size) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(5),
-      child: Container(
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
         color: isMe ? Colors.blueAccent : Colors.pinkAccent,
-        width: size,
-        height: size,
-        child: Icon(
-          isMe ? Icons.face : Icons.tag_faces,
-          color: Colors.white,
+        borderRadius: BorderRadius.circular(5),
+        image: DecorationImage(
+          image: AssetImage(
+            isMe ? "images/ic_user_head2.jpg" : "images/ic_user_head1.jpg",
+          ),
         ),
       ),
     );
@@ -230,7 +226,7 @@ class MessageContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-            margin: EdgeInsets.only(right: isMe ? 0 : 10, left: isMe ? 10 : 0),
+            margin: EdgeInsets.only(right: isMe ? 0 : 5, left: isMe ? 5 : 0),
             child: _buildAvatar(isMe, avatarSize),
           ),
           Builder(builder: (context) {
@@ -240,20 +236,21 @@ class MessageContent extends StatelessWidget {
                 BubblePopupWindow.show(
                   anchorContext: context,
                   child: menu,
-                  direction: BubbleDirection.bottomCenter,
+                  direction: BubbleDirection.topCenter,
                   color: const Color(0xFF4C4C4C),
                   radius: BorderRadius.circular(4),
                   miniEdgeMargin: const EdgeInsets.only(left: 10, right: 10),
                 );
               },
-              child: Container(
+              child: BubbleContainer(
                 padding: const EdgeInsets.all(10),
                 constraints:
                     BoxConstraints(maxWidth: 240, minHeight: avatarSize),
-                decoration: BoxDecoration(
-                  color: isMe ? const Color(0xff98e165) : Colors.white,
-                  borderRadius: BorderRadius.circular(3.0),
-                ),
+                color: isMe ? const Color(0xff98e165) : Colors.white,
+                borderRadius: BorderRadius.circular(3.0),
+                arrowDirection:
+                    isMe ? ArrowDirection.right : ArrowDirection.left,
+                arrowOffset: 20.0,
                 child: Text(
                   message.content,
                   style: const TextStyle(

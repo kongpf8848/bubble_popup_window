@@ -88,7 +88,6 @@ class _BubblePopupRoute<T> extends PopupRoute<T> {
   @override
   Widget buildPage(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation) {
-    print("+++++++++++++++++buildPage:$child");
     return child;
   }
 
@@ -188,7 +187,6 @@ class _BubblePopupWidgetState extends State<_BubblePopupWidget>
     if (bubbleRenderObject is RenderBox) {
       final RenderBox bubbleBox = bubbleRenderObject;
       final bubbleSize = bubbleBox.size;
-      print("+++++++++++++bubbleSize:$bubbleSize");
       // 计算气泡位置
       var popRect =
           _calculateRect(widget.direction, _anchorRect, bubbleSize, widget.gap);
