@@ -4,7 +4,7 @@ import './bubble_shape_border.dart';
 
 class BubbleContainer extends StatelessWidget {
   final BorderRadius? borderRadius;
-  final BorderSide border;
+  final BorderSide? border;
   final bool showArrow;
   final ArrowDirection arrowDirection;
   final double arrowWidth;
@@ -76,7 +76,7 @@ class BubbleContainer extends StatelessWidget {
       decoration: showArrow
           ? ShapeDecoration(
               shape: BubbleShapeBorder(
-                side: border,
+                side: border ?? BorderSide.none,
                 borderRadius: borderRadius ?? BorderRadius.zero,
                 fillColor: color,
                 arrowDirection: arrowDirection,
@@ -90,10 +90,10 @@ class BubbleContainer extends StatelessWidget {
           : BoxDecoration(
               color: color,
               border: Border(
-                top: border,
-                bottom: border,
-                left: border,
-                right: border,
+                top: border ?? BorderSide.none,
+                bottom: border ?? BorderSide.none,
+                left: border ?? BorderSide.none,
+                right: border ?? BorderSide.none,
               ),
               borderRadius: borderRadius ?? BorderRadius.zero,
               boxShadow: shadows,

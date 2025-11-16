@@ -16,7 +16,7 @@ class BubblePopupWindow {
     //弹窗圆角半径
     BorderRadius? radius = BorderRadius.zero,
     //弹窗边框
-    BorderSide border = BorderSide.none,
+    BorderSide? border = BorderSide.none,
     //弹窗阴影
     List<BoxShadow>? shadows,
     //弹窗内边距
@@ -106,7 +106,7 @@ class _BubblePopupWidget extends StatefulWidget {
   final BubbleDirection direction;
   final Color color;
   final BorderRadius? radius;
-  final BorderSide border;
+  final BorderSide? border;
   final List<BoxShadow>? shadows;
   final EdgeInsetsGeometry? padding;
   final double gap;
@@ -122,7 +122,7 @@ class _BubblePopupWidget extends StatefulWidget {
     required this.direction,
     required this.color,
     this.radius,
-    required this.border,
+    this.border,
     this.shadows,
     this.padding,
     required this.gap,
