@@ -2,6 +2,14 @@
 
 Flutter气泡弹窗库，提供带箭头指示器的浮动弹窗组件。
 
+## 截图
+
+<div style="display: flex;">
+  <img src="screenshots/screenshot_1.png" width=30%>
+  <img src="screenshots/screenshot_2.png" width=30%>
+   <img src="screenshots/screenshot_3.png" width=30%>
+</div>
+
 ## 功能特性
 
 - 🎯 **12种定位选项**：支持上下左右各个方向及对齐方式的弹窗定位
