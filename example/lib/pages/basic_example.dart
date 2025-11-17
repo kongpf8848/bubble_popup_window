@@ -17,9 +17,19 @@ class _BasicExampleState extends State<BasicExample> {
     "蓝色": Colors.green,
   };
 
+  final _maskColorMap = {
+    "透明": Colors.transparent,
+    "黑色，12%不透明度": Colors.black12,
+    "黑色，26%不透明度": Colors.black26,
+    "黑色，38%不透明度": Colors.black38,
+    "黑色，45%不透明度": Colors.black45,
+    "黑色，54%不透明度": Colors.black54,
+  };
+
   final GlobalKey moreKey = GlobalKey();
 
   Color _color = Colors.white;
+  Color _maskColor = Colors.transparent;
   Color? _borderColor;
   BubbleDirection _direction = BubbleDirection.bottomCenter;
   bool _showArrow = true;
@@ -73,7 +83,7 @@ class _BasicExampleState extends State<BasicExample> {
               ),
               const Spacer(),
               DropdownMenu<BubbleDirection>(
-                width: 180,
+                width: 200,
                 initialSelection: _direction,
                 onSelected: (BubbleDirection? direction) {
                   _direction = direction!;
@@ -106,7 +116,7 @@ class _BasicExampleState extends State<BasicExample> {
               ),
               const Spacer(),
               DropdownMenu<Color>(
-                width: 180,
+                width: 200,
                 initialSelection: _color,
                 leadingIcon: SizedBox(
                     width: 50,
@@ -136,6 +146,54 @@ class _BasicExampleState extends State<BasicExample> {
                       width: 40,
                       height: 40,
                       color: _colorMap.values.elementAt(index),
+                    ),
+                  );
+                }),
+              )
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Row(
+            children: [
+              const Text(
+                "弹窗遮罩层颜色:",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                ),
+              ),
+              const Spacer(),
+              DropdownMenu<Color>(
+                width: 200,
+                initialSelection: _maskColor,
+                leadingIcon: SizedBox(
+                    width: 50,
+                    height: 50,
+                    child: Center(
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: _maskColor,
+                          border: Border.all(color: Colors.grey)
+                        ),
+                      ),
+                    )),
+                onSelected: (Color? color) {
+                  setState(() {
+                    _maskColor = color!;
+                  });
+                },
+                dropdownMenuEntries: List.generate(_maskColorMap.length, (index) {
+                  return DropdownMenuEntry(
+                    label: _maskColorMap.keys.elementAt(index),
+                    value: _maskColorMap.values.elementAt(index),
+                    leadingIcon: Container(
+                      width: 40,
+                      height: 40,
+                      color: _maskColorMap.values.elementAt(index),
                     ),
                   );
                 }),
@@ -213,7 +271,7 @@ class _BasicExampleState extends State<BasicExample> {
             ),
           ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding: const EdgeInsets.only(left: 16.0),
           child: Row(
             children: [
               Text(
@@ -237,7 +295,7 @@ class _BasicExampleState extends State<BasicExample> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding: const EdgeInsets.only(left: 16.0),
           child: Row(
             children: [
               Text(
@@ -368,6 +426,7 @@ class _BasicExampleState extends State<BasicExample> {
       miniEdgeMargin: const EdgeInsets.only(left: 10, right: 10),
       direction: _direction,
       color: _color,
+      maskColor: _maskColor,
       border: (_showBorder && _borderColor != null)
           ? BorderSide(color: _borderColor!)
           : null,
