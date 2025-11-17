@@ -10,7 +10,7 @@
 <div style="display: flex;">
   <img src="screenshots/screenshot_1.png" width=30%>
   <img src="screenshots/screenshot_2.png" width=30%>
-   <img src="screenshots/screenshot_3.png" width=30%>
+  <img src="screenshots/screenshot_3.png" width=30%>
 </div>
 
 ## 功能特性
