@@ -26,7 +26,7 @@ class BubbleContainer extends StatelessWidget {
   final Clip clipBehavior;
 
   const BubbleContainer({
-    Key? key,
+    super.key,
     this.alignment,
     this.padding,
     this.color,
@@ -47,7 +47,7 @@ class BubbleContainer extends StatelessWidget {
     this.arrowHeight = 5.0,
     this.arrowRadius = 0.0,
     this.arrowOffset,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +88,7 @@ class BubbleContainer extends StatelessWidget {
                 arrowOffset: arrowOffset,
               ),
               shadows: shadows,
-              color: color
+              color: color,
             )
           : BoxDecoration(
               color: color,
@@ -100,7 +100,7 @@ class BubbleContainer extends StatelessWidget {
                       strokeAlign: border!.strokeAlign,
                     )
                   : null,
-              borderRadius: borderRadius ?? BorderRadius.zero,
+              borderRadius: borderRadius,
               boxShadow: shadows,
             ),
       child: child,
