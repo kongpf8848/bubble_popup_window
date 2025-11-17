@@ -1,6 +1,9 @@
 # Bubble Popup Window
 
-Flutter气泡弹窗库，提供带箭头指示器的浮动弹窗组件。
+一个功能强大的Flutter气泡弹窗库，提供带箭头指示器的浮动弹窗组件。
+
+[![pub package](https://img.shields.io/pub/v/bubble_popup_window?label=bubble_popup_window&color=green)](https://pub.dev/packages/bubble_popup_window)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/kongpf8848/bubble_popup_window/blob/master/LICENSE)
 
 ## 截图
 
