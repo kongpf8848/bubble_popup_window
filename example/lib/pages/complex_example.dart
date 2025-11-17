@@ -72,7 +72,7 @@ class _ComplexExampleState extends State<ComplexExample> {
                           (item) => GestureDetector(
                             behavior: HitTestBehavior.translucent,
                             onTap: () {
-                              print("onTap");
+                              debugPrint("onTap:${item.title}");
                               Navigator.of(context).pop();
                             },
                             child: Container(

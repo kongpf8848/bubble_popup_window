@@ -1,7 +1,7 @@
 import 'package:bubble_popup_window/bubble_popup_window.dart';
 import 'package:flutter/material.dart';
 
-const Duration _kDuration = Duration(milliseconds: 300);
+const Duration _kPopupDuration = Duration(milliseconds: 300);
 
 class BubblePopupWindow {
   static void show({
@@ -36,7 +36,7 @@ class BubblePopupWindow {
     //箭头高度
     double arrowHeight = 5.0,
   }) {
-    var _bubbleWidget = _BubblePopupWidget(
+    final bubbleWidget = _BubblePopupWidget(
       anchorContext: anchorContext,
       bubbleChild: child,
       direction: direction,
@@ -56,12 +56,13 @@ class BubblePopupWindow {
       _BubblePopupRoute(
         maskColor: maskColor,
         dismissOnTouchOutside: dismissOnTouchOutside,
-        child: _bubbleWidget,
+        child: bubbleWidget,
       ),
     );
   }
 }
 
+//气泡弹窗路由
 class _BubblePopupRoute<T> extends PopupRoute<T> {
   final Color? maskColor;
   final bool dismissOnTouchOutside;
@@ -83,7 +84,7 @@ class _BubblePopupRoute<T> extends PopupRoute<T> {
   bool get barrierDismissible => dismissOnTouchOutside;
 
   @override
-  Duration get transitionDuration => _kDuration;
+  Duration get transitionDuration => _kPopupDuration;
 
   @override
   Widget buildPage(BuildContext context, Animation<double> animation,
@@ -138,10 +139,11 @@ class _BubblePopupWidget extends StatefulWidget {
 class _BubblePopupWidgetState extends State<_BubblePopupWidget>
     with SingleTickerProviderStateMixin {
   final GlobalKey _bubbleKey = GlobalKey();
-  BubbleDirection? _finalDirection;
+
   late AnimationController _controller;
   late Animation<double> _animation;
   Offset? _bubbleOffset = Offset.zero;
+  BubbleDirection? _finalDirection;
   double? _arrowOffset;
   Rect _anchorRect = Rect.zero;
   Rect _boundaryRect = Rect.zero;
@@ -149,14 +151,28 @@ class _BubblePopupWidgetState extends State<_BubblePopupWidget>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(duration: _kDuration, vsync: this);
-    _animation =
-        CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn);
-    _controller.forward();
     _finalDirection = widget.direction;
+    _initializeAnimation();
+    _schedulePositionCalculation();
+  }
 
+  void _initializeAnimation() {
+    _controller = AnimationController(
+      duration: _kPopupDuration,
+      vsync: this,
+    );
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.fastOutSlowIn,
+    );
+    _controller.forward();
+  }
+
+  void _schedulePositionCalculation() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _calculatePosition();
+      if (mounted) {
+        _calculatePosition();
+      }
     });
   }
 
@@ -184,41 +200,48 @@ class _BubblePopupWidgetState extends State<_BubblePopupWidget>
     );
 
     final bubbleRenderObject = _bubbleKey.currentContext?.findRenderObject();
-    if (bubbleRenderObject is RenderBox) {
-      final RenderBox bubbleBox = bubbleRenderObject;
-      final bubbleSize = bubbleBox.size;
-      // 计算气泡位置
-      var popRect =
-          _calculateRect(widget.direction, _anchorRect, bubbleSize, widget.gap);
-      //调整方向
-      _finalDirection = _adjustDirection(
-          widget.direction, _boundaryRect, popRect, _anchorRect);
-      if (_finalDirection != widget.direction) {
-        popRect = _calculateRect(
-            _finalDirection!, _anchorRect, bubbleSize, widget.gap);
-      }
+    if (bubbleRenderObject is! RenderBox) return;
+    final bubbleSize = bubbleRenderObject.size;
 
-      popRect = _keepInside(_boundaryRect, popRect);
+    //计算弹窗区域
+    var popRect = _calculateRect(widget.direction, _anchorRect, bubbleSize);
+    //调整方向
+    _finalDirection = _adjustDirection(popRect);
+    if (_finalDirection != widget.direction) {
+      popRect = _calculateRect(_finalDirection!, _anchorRect, bubbleSize);
+    }
+    popRect = _constrainToBoundary(popRect);
 
-      // 计算箭头偏移
-      double? arrowOffset;
-      if (_finalDirection!.isVertical) {
-        arrowOffset = _anchorRect.center.dx - popRect.left;
-      } else if (_finalDirection!.isHorizontal) {
-        arrowOffset = _anchorRect.center.dy - popRect.top;
-      }
+    // 计算箭头偏移
+    final arrowOffset = _calculateArrowOffset(popRect);
 
-      setState(() {
+    // 刷新UI
+    setState(() {
+      if (mounted) {
         _bubbleOffset = popRect.topLeft;
         _arrowOffset = arrowOffset;
-      });
+      }
+    });
+  }
+
+  double? _calculateArrowOffset(Rect popRect) {
+    if (!widget.showArrow) {
+      return null;
     }
+
+    if (_finalDirection!.isVertical) {
+      return _anchorRect.center.dx - popRect.left;
+    } else if (_finalDirection!.isHorizontal) {
+      return _anchorRect.center.dy - popRect.top;
+    }
+
+    return 0.0;
   }
 
   Rect _calculateRect(
-      BubbleDirection direction, Rect anchorRect, Size bubbleSize, double gap) {
-    final dx = (anchorRect.width + bubbleSize.width) / 2 + gap;
-    final dy = (anchorRect.height + bubbleSize.height) / 2 + gap;
+      BubbleDirection direction, Rect anchorRect, Size bubbleSize) {
+    final dx = (anchorRect.width + bubbleSize.width) / 2 + widget.gap;
+    final dy = (anchorRect.height + bubbleSize.height) / 2 + widget.gap;
     Offset offset;
 
     switch (direction) {
@@ -265,64 +288,36 @@ class _BubblePopupWidgetState extends State<_BubblePopupWidget>
         center: center, width: bubbleSize.width, height: bubbleSize.height);
   }
 
-  BubbleDirection _adjustDirection(
-      BubbleDirection direction, Rect container, Rect child, Rect anchorRect) {
-    switch (direction) {
-      case BubbleDirection.topStart:
-      case BubbleDirection.topCenter:
-      case BubbleDirection.topEnd:
-        if (child.top < container.top) {
-          return ~direction;
-        }
-        break;
-      case BubbleDirection.bottomStart:
-      case BubbleDirection.bottomCenter:
-      case BubbleDirection.bottomEnd:
-        if (child.bottom > container.bottom) {
-          return ~direction;
-        }
-        break;
-      case BubbleDirection.leftStart:
-      case BubbleDirection.leftCenter:
-      case BubbleDirection.leftEnd:
-        if (child.left < container.left) {
-          return ~direction;
-        }
-        break;
-      case BubbleDirection.rightStart:
-      case BubbleDirection.rightCenter:
-      case BubbleDirection.rightEnd:
-        if (child.right > container.right) {
-          return ~direction;
-        }
-        break;
+  BubbleDirection _adjustDirection(Rect popRect) {
+    if (_isOutOfBounds(popRect)) {
+      return ~widget.direction;
     }
-    return direction;
+    return widget.direction;
   }
 
-  //保持child在parent范围内
-  Rect _keepInside(Rect parent, Rect child) {
-    if (child.left < parent.left ||
-        child.right > parent.right ||
-        child.top < parent.top ||
-        child.bottom > parent.bottom) {
-      double dx = 0;
-      double dy = 0;
+  bool _isOutOfBounds(Rect popRect) {
+    return popRect.left < _boundaryRect.left ||
+        popRect.right > _boundaryRect.right ||
+        popRect.top < _boundaryRect.top ||
+        popRect.bottom > _boundaryRect.bottom;
+  }
 
-      if (child.left < parent.left) {
-        dx = parent.left - child.left;
-      } else if (child.right > parent.right) {
-        dx = parent.right - child.right;
-      }
-      if (child.top < parent.top) {
-        dy = parent.top - child.top;
-      } else if (child.bottom > parent.bottom) {
-        dy = parent.bottom - child.bottom;
-      }
-      return child.shift(Offset(dx, dy));
-    } else {
-      return child;
+  Rect _constrainToBoundary(Rect child) {
+    double dx = 0;
+    double dy = 0;
+    if (child.left < _boundaryRect.left) {
+      dx = _boundaryRect.left - child.left;
+    } else if (child.right > _boundaryRect.right) {
+      dx = _boundaryRect.right - child.right;
     }
+
+    if (child.top < _boundaryRect.top) {
+      dy = _boundaryRect.top - child.top;
+    } else if (child.bottom > _boundaryRect.bottom) {
+      dy = _boundaryRect.bottom - child.bottom;
+    }
+
+    return child.shift(Offset(dx, dy));
   }
 
   ArrowDirection bubbleToArrow(BubbleDirection bubbleDirection) {
@@ -354,7 +349,7 @@ class _BubblePopupWidgetState extends State<_BubblePopupWidget>
 
   @override
   Widget build(BuildContext context) {
-    print(
+    debugPrint(
         "++++++++++++++++_bubbleOffset:$_bubbleOffset,_finalDirection:$_finalDirection");
     return Stack(
       children: [

@@ -47,32 +47,6 @@ class _MyHomePageState extends State<MyHomePage> {
             const SizedBox(
               height: 20,
             ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (BuildContext context) {
-                    return const BasicExample();
-                  },
-                ));
-              },
-              child: const Text("Basic Example"),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (BuildContext context) {
-                    return const ComplexExample();
-                  },
-                ));
-              },
-              child: const Text("Complex Example"),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
             Builder(builder: (anchorContext) {
               return ElevatedButton(
                 onPressed: () {
@@ -114,7 +88,33 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 child: const Text("ToolTip"),
               );
-            })
+            }),
+            const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (BuildContext context) {
+                    return const BasicExample();
+                  },
+                ));
+              },
+              child: const Text("Basic Example"),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (BuildContext context) {
+                    return const ComplexExample();
+                  },
+                ));
+              },
+              child: const Text("Complex Example"),
+            ),
           ],
         ),
       ), // This trailing comma makes auto-formatting nicer for build methods.
