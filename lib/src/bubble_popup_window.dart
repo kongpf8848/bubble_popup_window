@@ -289,8 +289,35 @@ class _BubblePopupWidgetState extends State<_BubblePopupWidget>
   }
 
   BubbleDirection _adjustDirection(Rect popRect) {
-    if (_isOutOfBounds(popRect)) {
-      return ~widget.direction;
+    switch (widget.direction) {
+      case BubbleDirection.topStart:
+      case BubbleDirection.topCenter:
+      case BubbleDirection.topEnd:
+        if (popRect.top < _boundaryRect.top) {
+          return ~widget.direction;
+        }
+        break;
+      case BubbleDirection.bottomStart:
+      case BubbleDirection.bottomCenter:
+      case BubbleDirection.bottomEnd:
+        if (popRect.bottom > _boundaryRect.bottom) {
+          return ~widget.direction;
+        }
+        break;
+      case BubbleDirection.leftStart:
+      case BubbleDirection.leftCenter:
+      case BubbleDirection.leftEnd:
+        if (popRect.left < _boundaryRect.left) {
+          return ~widget.direction;
+        }
+        break;
+      case BubbleDirection.rightStart:
+      case BubbleDirection.rightCenter:
+      case BubbleDirection.rightEnd:
+        if (popRect.right > _boundaryRect.right) {
+          return ~widget.direction;
+        }
+        break;
     }
     return widget.direction;
   }
