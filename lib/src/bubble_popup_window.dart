@@ -92,12 +92,6 @@ class _BubblePopupRoute<T> extends PopupRoute<T> {
     return child;
   }
 
-  @override
-  Widget buildTransitions(BuildContext context, Animation<double> animation,
-      Animation<double> secondaryAnimation, Widget child) {
-    return super
-        .buildTransitions(context, animation, secondaryAnimation, child);
-  }
 }
 
 class _BubblePopupWidget extends StatefulWidget {
@@ -320,13 +314,6 @@ class _BubblePopupWidgetState extends State<_BubblePopupWidget>
         break;
     }
     return widget.direction;
-  }
-
-  bool _isOutOfBounds(Rect popRect) {
-    return popRect.left < _boundaryRect.left ||
-        popRect.right > _boundaryRect.right ||
-        popRect.top < _boundaryRect.top ||
-        popRect.bottom > _boundaryRect.bottom;
   }
 
   Rect _constrainToBoundary(Rect child) {
