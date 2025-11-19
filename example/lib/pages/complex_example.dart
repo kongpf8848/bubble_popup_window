@@ -35,7 +35,7 @@ class _ComplexExampleState extends State<ComplexExample> {
       ChatModel('还行，最近出去旅游了', isMe: true),
       ChatModel('去哪里了啊？', isMe: false),
       ChatModel(
-          '上周去北京玩了，玩的挺开心的，特地总结出这篇全新北京旅游省钱攻略提供给你，希望给你带来有价值的参考。我们一共玩了3天，去了故宫、八达岭长城、圆明园、颐和园、天坛、奥林匹克公园等网红景点。',
+          '上周去北京玩了，玩的挺开心的，特地总结出这篇全新北京旅游省钱攻略提供给你，希望给你带来有价值的参考。我们一共玩了3天，去了故宫、八达岭长城、圆明园、颐和园、奥林匹克公园等网红景点。',
           isMe: true),
       ChatModel('我也想去，但没有时间', isMe: false),
       ChatModel('明白', isMe: true),
