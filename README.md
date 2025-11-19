@@ -3,7 +3,7 @@
 一个功能强大的Flutter气泡弹窗库，提供带箭头指示器的浮动弹窗组件。
 
 [![pub package](https://img.shields.io/pub/v/bubble_popup_window?label=bubble_popup_window&color=green)](https://pub.dev/packages/bubble_popup_window)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/kongpf8848/bubble_popup_window/blob/master/LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/kongpf8848/bubble_popup_window/refs/heads/master/LICENSE)
 
 ## 截图
 
@@ -155,4 +155,4 @@ enum BubbleDirection {
 
 ## 许可证
 
-[MIT License](https://github.com/kongpf8848/bubble_popup_window/blob/master/LICENSE)
+[MIT License](https://raw.githubusercontent.com/kongpf8848/bubble_popup_window/refs/heads/master/LICENSE)
