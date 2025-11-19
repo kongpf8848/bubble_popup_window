@@ -34,6 +34,7 @@ class _BasicExampleState extends State<BasicExample> {
   BubbleDirection _direction = BubbleDirection.bottomCenter;
   bool _showArrow = true;
   bool _showBorder = false;
+  double _borderWidth = 0.0;
   bool _dismissOnTouchOutside = true;
   double _gap = 0.0;
   double _radius = 0.0;
@@ -176,9 +177,8 @@ class _BasicExampleState extends State<BasicExample> {
                         width: 40,
                         height: 40,
                         decoration: BoxDecoration(
-                          color: _maskColor,
-                          border: Border.all(color: Colors.grey)
-                        ),
+                            color: _maskColor,
+                            border: Border.all(color: Colors.grey)),
                       ),
                     )),
                 onSelected: (Color? color) {
@@ -186,7 +186,8 @@ class _BasicExampleState extends State<BasicExample> {
                     _maskColor = color!;
                   });
                 },
-                dropdownMenuEntries: List.generate(_maskColorMap.length, (index) {
+                dropdownMenuEntries:
+                    List.generate(_maskColorMap.length, (index) {
                   return DropdownMenuEntry(
                     label: _maskColorMap.keys.elementAt(index),
                     value: _maskColorMap.values.elementAt(index),
@@ -270,6 +271,31 @@ class _BasicExampleState extends State<BasicExample> {
               ],
             ),
           ),
+        if (_showBorder)
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0),
+            child: Row(
+              children: [
+                Text(
+                  "边框宽度(${_borderWidth.toStringAsFixed(1)}):",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                  ),
+                ),
+                const Spacer(),
+                Slider(
+                    min: 0,
+                    max: 10,
+                    value: _borderWidth,
+                    onChanged: (double newValue) {
+                      setState(() {
+                        _borderWidth = newValue;
+                      });
+                    })
+              ],
+            ),
+          ),
         Padding(
           padding: const EdgeInsets.only(left: 16.0),
           child: Row(
@@ -284,7 +310,7 @@ class _BasicExampleState extends State<BasicExample> {
               const Spacer(),
               Slider(
                   min: 0,
-                  max: 20,
+                  max: 10,
                   value: _radius,
                   onChanged: (double newValue) {
                     setState(() {
@@ -308,7 +334,7 @@ class _BasicExampleState extends State<BasicExample> {
               const Spacer(),
               Slider(
                   min: 0,
-                  max: 20,
+                  max: 10,
                   value: _gap,
                   onChanged: (double newValue) {
                     setState(() {
@@ -392,7 +418,6 @@ class _BasicExampleState extends State<BasicExample> {
       return GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 2),
           width: 90,
           height: 40,
           //color: Colors.primaries[index % Colors.primaries.length],
@@ -427,8 +452,11 @@ class _BasicExampleState extends State<BasicExample> {
       direction: _direction,
       color: _color,
       maskColor: _maskColor,
-      border: (_showBorder && _borderColor != null)
-          ? BorderSide(color: _borderColor!)
+      border: (_showBorder)
+          ? BorderSide(
+              color: _borderColor ?? Colors.transparent,
+              width: _borderWidth,
+            )
           : null,
       gap: _gap,
       radius: BorderRadius.circular(_radius),

@@ -363,8 +363,6 @@ class _BubblePopupWidgetState extends State<_BubblePopupWidget>
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(
-        "++++++++++++++++_bubbleOffset:$_bubbleOffset,_finalDirection:$_finalDirection");
     return Stack(
       children: [
         if (_bubbleOffset != null && _finalDirection != null) ...[

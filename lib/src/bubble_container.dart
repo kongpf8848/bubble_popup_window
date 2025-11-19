@@ -80,7 +80,6 @@ class BubbleContainer extends StatelessWidget {
               shape: BubbleShapeBorder(
                 side: border ?? BorderSide.none,
                 borderRadius: borderRadius ?? BorderRadius.zero,
-                fillColor: color,
                 arrowDirection: arrowDirection,
                 arrowWidth: arrowWidth,
                 arrowHeight: arrowHeight,
