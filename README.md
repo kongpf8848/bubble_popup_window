@@ -8,9 +8,9 @@
 ## 截图
 
 <div style="display: flex;">
-  <img src="screenshots/screenshot_1.png" width=30%>
-  <img src="screenshots/screenshot_2.png" width=30%>
-  <img src="screenshots/screenshot_3.png" width=30%>
+  <img src="https://github.com/kongpf8848/bubble_popup_window/blob/master/screenshots/screenshot_1.png" width=30%>
+  <img src="https://github.com/kongpf8848/bubble_popup_window/blob/master/screenshots/screenshot_2.png" width=30%>
+  <img src="https://github.com/kongpf8848/bubble_popup_window/blob/master/screenshots/screenshot_1.png" width=30%>
 </div>
 
 ## 功能特性
@@ -18,7 +18,7 @@
 - 🎯 **12种定位选项**：支持上下左右各个方向及对齐方式的弹窗定位
 - 🔄 **智能调整位置**：自动检测边界并调整弹窗位置确保完全可见
 - 🎨 **高度可定制**：支持自定义弹窗背景、圆角、间距、箭头大小和颜色等
-- 🎭 **功能丰富**：支持点击弹窗外部关闭、设置遮罩层颜色等功能
+- 🎭 **功能丰富**：支持点击外部关闭弹窗、设置遮罩层颜色等功能
 
 ## 安装
 
