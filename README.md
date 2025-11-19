@@ -8,9 +8,9 @@
 ## 截图
 
 <div style="display: flex;">
-  <img src="https://github.com/kongpf8848/bubble_popup_window/blob/master/screenshots/screenshot_1.png" width=30%>
-  <img src="https://github.com/kongpf8848/bubble_popup_window/blob/master/screenshots/screenshot_2.png" width=30%>
-  <img src="https://github.com/kongpf8848/bubble_popup_window/blob/master/screenshots/screenshot_1.png" width=30%>
+  <img src="https://raw.githubusercontent.com/kongpf8848/bubble_popup_window/refs/heads/master/screenshots/screenshot_1.png" width=30%>
+  <img src="https://raw.githubusercontent.com/kongpf8848/bubble_popup_window/refs/heads/master/screenshots/screenshot_2.png" width=30%>
+  <img src="https://raw.githubusercontent.com/kongpf8848/bubble_popup_window/refs/heads/master/screenshots/screenshot_3.png" width=30%>
 </div>
 
 ## 功能特性
@@ -26,7 +26,7 @@
 
 ```yaml
 dependencies:
-  bubble_popup_window: ^0.0.4
+  bubble_popup_window: ^0.0.5
 ```
 
 ## 使用
