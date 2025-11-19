@@ -1,3 +1,6 @@
+## 0.0.4
+update example
+
 ## 0.0.3
 fix border bug.
 
