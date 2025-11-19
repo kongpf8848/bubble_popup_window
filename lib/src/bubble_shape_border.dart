@@ -76,7 +76,7 @@ class BubbleShapeBorder extends OutlinedBorder {
 
   @override
   Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
-    return _buildPath(rect, false);
+    return _buildPath(rect.inflate(side.strokeOutset), false);
   }
 
   Rect _getRoundedRect(Rect rect) {
@@ -102,7 +102,7 @@ class BubbleShapeBorder extends OutlinedBorder {
   Path _buildPath(Rect rect, bool isInner) {
     final path = Path();
     final nRect = _getRoundedRect(rect);
-    final sideOffset = isInner ? side.strokeInset : side.strokeOutset;
+    final sideOffset = isInner ? -side.strokeInset : side.strokeOutset;
 
     final arrowProp = _calculateArrowProperties();
 
@@ -111,7 +111,7 @@ class BubbleShapeBorder extends OutlinedBorder {
     //top arrow
     if (arrowDirection == ArrowDirection.top) {
       Offset pointCenter = Offset(
-          nRect.left + (arrowOffset ?? nRect.width / 2) - sideOffset,
+          nRect.left + (arrowOffset ?? nRect.width / 2) + sideOffset,
           nRect.top);
       Offset pointStart =
           Offset(pointCenter.dx - arrowProp.halfWidth, nRect.top);
@@ -157,7 +157,7 @@ class BubbleShapeBorder extends OutlinedBorder {
     //right arrow
     if (arrowDirection == ArrowDirection.right) {
       Offset pointCenter = Offset(nRect.right,
-          nRect.top + (arrowOffset ?? nRect.height / 2) - sideOffset);
+          nRect.top + (arrowOffset ?? nRect.height / 2) + sideOffset);
       Offset pointStart =
           Offset(nRect.right, pointCenter.dy - arrowProp.halfWidth);
       Offset pointArrow = Offset(rect.right, pointCenter.dy);
@@ -202,7 +202,7 @@ class BubbleShapeBorder extends OutlinedBorder {
     //bottom arrow
     if (arrowDirection == ArrowDirection.bottom) {
       Offset pointCenter = Offset(
-          nRect.left + (arrowOffset ?? nRect.width / 2) - sideOffset,
+          nRect.left + (arrowOffset ?? nRect.width / 2) + sideOffset,
           nRect.bottom);
       Offset pointStart =
           Offset(pointCenter.dx + arrowProp.halfWidth, nRect.bottom);
@@ -249,7 +249,7 @@ class BubbleShapeBorder extends OutlinedBorder {
     // left arrow
     if (arrowDirection == ArrowDirection.left) {
       Offset pointCenter = Offset(nRect.left,
-          nRect.top + (arrowOffset ?? nRect.height / 2) - sideOffset);
+          nRect.top + (arrowOffset ?? nRect.height / 2) + sideOffset);
       Offset pointStart =
           Offset(nRect.left, pointCenter.dy + arrowProp.halfWidth);
       Offset pointArrow = Offset(rect.left, pointCenter.dy);

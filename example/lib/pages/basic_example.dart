@@ -10,8 +10,13 @@ class BasicExample extends StatefulWidget {
 
 class _BasicExampleState extends State<BasicExample> {
   final List<String> _menuList = ["分享", "保存", "取消"];
-  final _colorMap = {
+  final _bgColorMap = {
     "白色": Colors.white,
+    "红色": Colors.red,
+    "绿色": Colors.blue,
+    "蓝色": Colors.green,
+  };
+  final _borderColorMap = {
     "红色": Colors.red,
     "绿色": Colors.blue,
     "蓝色": Colors.green,
@@ -34,7 +39,7 @@ class _BasicExampleState extends State<BasicExample> {
   BubbleDirection _direction = BubbleDirection.bottomCenter;
   bool _showArrow = true;
   bool _showBorder = false;
-  double _borderWidth = 0.0;
+  double _borderWidth = 1.0;
   bool _dismissOnTouchOutside = true;
   double _gap = 0.0;
   double _radius = 0.0;
@@ -139,14 +144,14 @@ class _BasicExampleState extends State<BasicExample> {
                     _color = color!;
                   });
                 },
-                dropdownMenuEntries: List.generate(_colorMap.length, (index) {
+                dropdownMenuEntries: List.generate(_bgColorMap.length, (index) {
                   return DropdownMenuEntry(
-                    label: _colorMap.keys.elementAt(index),
-                    value: _colorMap.values.elementAt(index),
+                    label: _bgColorMap.keys.elementAt(index),
+                    value: _bgColorMap.values.elementAt(index),
                     leadingIcon: Container(
                       width: 40,
                       height: 40,
-                      color: _colorMap.values.elementAt(index),
+                      color: _bgColorMap.values.elementAt(index),
                     ),
                   );
                 }),
@@ -215,7 +220,7 @@ class _BasicExampleState extends State<BasicExample> {
             setState(() {
               _showBorder = newValue;
               if (newValue) {
-                _borderColor ??= _colorMap.values.first;
+                _borderColor ??= _borderColorMap.values.first;
               }
             });
           },
@@ -256,14 +261,15 @@ class _BasicExampleState extends State<BasicExample> {
                       _borderColor = color!;
                     });
                   },
-                  dropdownMenuEntries: List.generate(_colorMap.length, (index) {
+                  dropdownMenuEntries:
+                      List.generate(_borderColorMap.length, (index) {
                     return DropdownMenuEntry(
-                      label: _colorMap.keys.elementAt(index),
-                      value: _colorMap.values.elementAt(index),
+                      label: _borderColorMap.keys.elementAt(index),
+                      value: _borderColorMap.values.elementAt(index),
                       leadingIcon: Container(
                         width: 40,
                         height: 40,
-                        color: _colorMap.values.elementAt(index),
+                        color: _borderColorMap.values.elementAt(index),
                       ),
                     );
                   }),

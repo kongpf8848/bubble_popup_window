@@ -14,6 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Bubble PopupWindow Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
@@ -127,6 +128,8 @@ class _MyHomePageState extends State<MyHomePage> {
       arrowWidth: 12.0,
       //箭头高度
       arrowHeight: 6.0,
+      //箭头半径
+      arrowRadius: 2.0,
     );
   }
 }

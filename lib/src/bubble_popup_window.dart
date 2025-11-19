@@ -35,6 +35,8 @@ class BubblePopupWindow {
     double arrowWidth = 10.0,
     //箭头高度
     double arrowHeight = 5.0,
+    //箭头半径
+    double arrowRadius = 0.0,
   }) {
     final bubbleWidget = _BubblePopupWidget(
       anchorContext: anchorContext,
@@ -50,6 +52,7 @@ class BubblePopupWindow {
       showArrow: showArrow,
       arrowWidth: arrowWidth,
       arrowHeight: arrowHeight,
+      arrowRadius: arrowRadius,
     );
 
     Navigator.of(anchorContext).push(
@@ -91,7 +94,6 @@ class _BubblePopupRoute<T> extends PopupRoute<T> {
       Animation<double> secondaryAnimation) {
     return child;
   }
-
 }
 
 class _BubblePopupWidget extends StatefulWidget {
@@ -108,6 +110,7 @@ class _BubblePopupWidget extends StatefulWidget {
   final bool showArrow;
   final double arrowWidth;
   final double arrowHeight;
+  final double arrowRadius;
 
   const _BubblePopupWidget({
     super.key,
@@ -124,6 +127,7 @@ class _BubblePopupWidget extends StatefulWidget {
     required this.showArrow,
     required this.arrowWidth,
     required this.arrowHeight,
+    required this.arrowRadius,
   });
 
   @override
@@ -381,7 +385,7 @@ class _BubblePopupWidgetState extends State<_BubblePopupWidget>
                 showArrow: widget.showArrow,
                 arrowWidth: widget.arrowWidth,
                 arrowHeight: widget.arrowHeight,
-                arrowRadius: 0.0,
+                arrowRadius: widget.arrowRadius,
                 arrowOffset: _arrowOffset,
                 arrowDirection: bubbleToArrow(_finalDirection!),
                 child: Material(
