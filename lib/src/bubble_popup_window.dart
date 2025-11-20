@@ -54,7 +54,7 @@ class BubblePopupWindow {
         miniEdgeMargin,
         maskColor,
         dismissOnTouchOutside,
-        BubbleAnimationStyle.noAnimation,
+        null,
         showArrow,
         arrowWidth,
         arrowHeight,
