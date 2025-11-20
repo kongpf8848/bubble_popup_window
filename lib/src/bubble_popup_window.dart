@@ -224,8 +224,6 @@ class _BubblePopupWidgetState extends State<_BubblePopupWidget>
   Widget build(BuildContext context) {
     final CurveTween opacity =
         CurveTween(curve: const Interval(0.0, 1.0 / 3.0));
-    final CurveTween width = CurveTween(curve: Interval(0.0, 1.0));
-    final CurveTween height = CurveTween(curve: Interval(0.0, 1.0));
 
     return Stack(
       children: [
