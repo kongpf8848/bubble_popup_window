@@ -72,7 +72,10 @@ class _ComplexExampleState extends State<ComplexExample> {
                           (item) => GestureDetector(
                             behavior: HitTestBehavior.translucent,
                             onTap: () {
-                              debugPrint("onTap:${item.title}");
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: Text("你点击了:${item.title}"),
+                              ));
                               Navigator.of(context).pop();
                             },
                             child: Container(
@@ -163,7 +166,7 @@ class MessageContent extends StatelessWidget {
     ItemModel('搜一搜', Icons.search),
   ];
 
-  Widget _buildLongPressMenu() {
+  Widget _buildLongPressMenu(BuildContext context) {
     return Container(
       width: 220,
       child: GridView.count(
@@ -175,23 +178,31 @@ class MessageContent extends StatelessWidget {
         physics: const NeverScrollableScrollPhysics(),
         children: menuItems
             .map(
-              (item) => Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Icon(
-                    item.icon,
-                    size: 20,
-                    color: Colors.white,
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 2),
-                    child: Text(
-                      item.title,
-                      style: const TextStyle(color: Colors.white, fontSize: 12),
-                    ),
-                  ),
-                ],
-              ),
+              (item) => GestureDetector(
+                  onTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text("你点击了:${item.title}"),
+                    ));
+                    Navigator.of(context).pop();
+                  },
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Icon(
+                        item.icon,
+                        size: 20,
+                        color: Colors.white,
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 2),
+                        child: Text(
+                          item.title,
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 12),
+                        ),
+                      ),
+                    ],
+                  )),
             )
             .toList(),
       ),
@@ -232,7 +243,7 @@ class MessageContent extends StatelessWidget {
           Builder(builder: (context) {
             return GestureDetector(
               onLongPress: () {
-                var menu = _buildLongPressMenu();
+                var menu = _buildLongPressMenu(context);
                 BubblePopupWindow.show(
                   anchorContext: context,
                   child: menu,

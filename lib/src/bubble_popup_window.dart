@@ -1,5 +1,5 @@
 import 'package:bubble_popup_window/bubble_popup_window.dart';
-import 'package:bubble_popup_window/src/buble_animation_style.dart';
+import 'package:bubble_popup_window/src/bubble_animation_style.dart';
 import 'package:flutter/material.dart';
 
 const Duration _kPopupDuration = Duration(milliseconds: 300);
@@ -31,8 +31,6 @@ class BubblePopupWindow {
     Color? maskColor,
     //点击弹窗外部时是否自动关闭弹窗
     bool dismissOnTouchOutside = true,
-    //弹窗动画
-    BubbleAnimationStyle? animationStyle,
     //是否显示箭头
     bool showArrow = true,
     //箭头宽度
@@ -56,7 +54,7 @@ class BubblePopupWindow {
         miniEdgeMargin,
         maskColor,
         dismissOnTouchOutside,
-        animationStyle,
+        BubbleAnimationStyle.noAnimation,
         showArrow,
         arrowWidth,
         arrowHeight,
