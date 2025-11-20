@@ -102,7 +102,7 @@ class _BubblePopupRoute<T> extends PopupRoute<T> {
     if (animationStyle != BubbleAnimationStyle.noAnimation) {
       return CurvedAnimation(
         parent: super.createAnimation(),
-        curve: animationStyle?.curve ?? Curves.bounceOut,
+        curve: animationStyle?.curve ?? Curves.linear,
         reverseCurve: animationStyle?.reverseCurve ??
             const Interval(0.0, _kPopupCloseIntervalEnd),
       );
