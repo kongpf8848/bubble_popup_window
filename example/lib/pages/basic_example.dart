@@ -70,7 +70,8 @@ class _BasicExampleState extends State<BasicExample> {
   }
 
   Widget _buildBody() {
-    return Column(
+    return SingleChildScrollView(
+        child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         const SizedBox(
@@ -384,8 +385,11 @@ class _BasicExampleState extends State<BasicExample> {
           height: 10,
         ),
         _button(),
+        const SizedBox(
+          height: 150,
+        ),
       ],
-    );
+    ));
   }
 
   Widget _button() {

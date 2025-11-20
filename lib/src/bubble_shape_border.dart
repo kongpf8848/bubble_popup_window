@@ -102,7 +102,10 @@ class BubbleShapeBorder extends OutlinedBorder {
   Path _buildPath(Rect rect, bool isInner) {
     final path = Path();
     final nRect = _getRoundedRect(rect);
-    final sideOffset = isInner ? -side.strokeInset : side.strokeOutset;
+    var sideOffset = 0.0;
+    if (arrowOffset != null) {
+      sideOffset = isInner ? -side.strokeInset : side.strokeOutset;
+    }
 
     final arrowProp = _calculateArrowProperties();
 
