@@ -226,10 +226,8 @@ class _BubblePopupWidgetState extends State<_BubblePopupWidget>
   Widget build(BuildContext context) {
     final CurveTween opacity =
         CurveTween(curve: const Interval(0.0, 1.0 / 3.0));
-    final CurveTween width =
-        CurveTween(curve: Interval(0.0, 1.0));
-    final CurveTween height =
-        CurveTween(curve: Interval(0.0, 1.0));
+    final CurveTween width = CurveTween(curve: Interval(0.0, 1.0));
+    final CurveTween height = CurveTween(curve: Interval(0.0, 1.0));
 
     return Stack(
       children: [
@@ -243,21 +241,20 @@ class _BubblePopupWidgetState extends State<_BubblePopupWidget>
                 builder: (BuildContext context, Widget? child) {
                   return FadeTransition(
                     opacity: opacity.animate(widget.route.animation!),
-                    child: BubbleContainer(
-                      borderRadius: widget.radius,
-                      border: widget.border,
-                      shadows: widget.shadows,
-                      padding: widget.padding,
-                      color: widget.color,
-                      showArrow: widget.showArrow,
-                      arrowWidth: widget.arrowWidth,
-                      arrowHeight: widget.arrowHeight,
-                      arrowRadius: widget.arrowRadius,
-                      arrowOffset: _arrowOffset,
-                      arrowDirection: bubbleToArrow(_finalDirection!),
-                      child: Material(
+                    child: Material(
+                      color: Colors.transparent,
+                      child: BubbleContainer(
+                        borderRadius: widget.radius,
+                        border: widget.border,
+                        shadows: widget.shadows,
+                        padding: widget.padding,
                         color: widget.color,
-                        type: MaterialType.card,
+                        showArrow: widget.showArrow,
+                        arrowWidth: widget.arrowWidth,
+                        arrowHeight: widget.arrowHeight,
+                        arrowRadius: widget.arrowRadius,
+                        arrowOffset: _arrowOffset,
+                        arrowDirection: _bubbleToArrow(_finalDirection!),
                         child: child,
                       ),
                     ),
@@ -428,7 +425,7 @@ class _BubblePopupWidgetState extends State<_BubblePopupWidget>
     return child.shift(Offset(dx, dy));
   }
 
-  ArrowDirection bubbleToArrow(BubbleDirection bubbleDirection) {
+  ArrowDirection _bubbleToArrow(BubbleDirection bubbleDirection) {
     final ArrowDirection arrowDirection;
     switch (bubbleDirection) {
       case BubbleDirection.topStart:
