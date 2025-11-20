@@ -42,29 +42,25 @@ class BubblePopupWindow {
     //箭头半径
     double arrowRadius = 0.0,
   }) {
-    final bubbleWidget = _BubblePopupWidget(
-      anchorContext: anchorContext,
-      bubbleChild: child,
-      direction: direction,
-      color: color,
-      radius: radius,
-      border: border,
-      shadows: shadows,
-      padding: padding,
-      gap: gap,
-      miniEdgeMargin: miniEdgeMargin,
-      showArrow: showArrow,
-      arrowWidth: arrowWidth,
-      arrowHeight: arrowHeight,
-      arrowRadius: arrowRadius,
-    );
-
     Navigator.of(anchorContext).push(
       _BubblePopupRoute(
-        animationStyle: animationStyle,
-        maskColor: maskColor,
-        dismissOnTouchOutside: dismissOnTouchOutside,
-        child: bubbleWidget,
+        anchorContext,
+        child,
+        direction,
+        color,
+        radius,
+        border,
+        shadows,
+        padding,
+        gap,
+        miniEdgeMargin,
+        maskColor,
+        dismissOnTouchOutside,
+        animationStyle,
+        showArrow,
+        arrowWidth,
+        arrowHeight,
+        arrowRadius,
       ),
     );
   }
@@ -72,17 +68,45 @@ class BubblePopupWindow {
 
 //气泡弹窗路由
 class _BubblePopupRoute<T> extends PopupRoute<T> {
-  final BubbleAnimationStyle? animationStyle;
+  final BuildContext anchorContext;
+  final Widget child;
+  final BubbleDirection direction;
+  final Color color;
+  final BorderRadius? radius;
+  final BorderSide? border;
+  final List<BoxShadow>? shadows;
+  final EdgeInsetsGeometry? padding;
+  final double gap;
+  final EdgeInsets miniEdgeMargin;
   final Color? maskColor;
   final bool dismissOnTouchOutside;
-  final Widget child;
+  final BubbleAnimationStyle? animationStyle;
 
-  _BubblePopupRoute({
-    required this.animationStyle,
-    required this.maskColor,
-    required this.dismissOnTouchOutside,
-    required this.child,
-  });
+  final bool showArrow;
+  final double arrowWidth;
+
+  final double arrowHeight;
+  final double arrowRadius;
+
+  _BubblePopupRoute(
+    this.anchorContext,
+    this.child,
+    this.direction,
+    this.color,
+    this.radius,
+    this.border,
+    this.shadows,
+    this.padding,
+    this.gap,
+    this.miniEdgeMargin,
+    this.maskColor,
+    this.dismissOnTouchOutside,
+    this.animationStyle,
+    this.showArrow,
+    this.arrowWidth,
+    this.arrowHeight,
+    this.arrowRadius,
+  );
 
   @override
   String? get barrierLabel => null;
@@ -113,11 +137,29 @@ class _BubblePopupRoute<T> extends PopupRoute<T> {
   @override
   Widget buildPage(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation) {
-    return child;
+    final bubbleWidget = _BubblePopupWidget(
+      route: this,
+      anchorContext: anchorContext,
+      bubbleChild: child,
+      direction: direction,
+      color: color,
+      radius: radius,
+      border: border,
+      shadows: shadows,
+      padding: padding,
+      gap: gap,
+      miniEdgeMargin: miniEdgeMargin,
+      showArrow: showArrow,
+      arrowWidth: arrowWidth,
+      arrowHeight: arrowHeight,
+      arrowRadius: arrowRadius,
+    );
+    return bubbleWidget;
   }
 }
 
-class _BubblePopupWidget extends StatefulWidget {
+class _BubblePopupWidget<T> extends StatefulWidget {
+  final _BubblePopupRoute route;
   final BuildContext anchorContext;
   final Widget bubbleChild;
   final BubbleDirection direction;
@@ -135,14 +177,15 @@ class _BubblePopupWidget extends StatefulWidget {
 
   const _BubblePopupWidget({
     super.key,
+    required this.route,
     required this.anchorContext,
     required this.bubbleChild,
     required this.direction,
     required this.color,
-    this.radius,
-    this.border,
-    this.shadows,
-    this.padding,
+    required this.radius,
+    required this.border,
+    required this.shadows,
+    required this.padding,
     required this.gap,
     required this.miniEdgeMargin,
     required this.showArrow,
@@ -158,9 +201,6 @@ class _BubblePopupWidget extends StatefulWidget {
 class _BubblePopupWidgetState extends State<_BubblePopupWidget>
     with SingleTickerProviderStateMixin {
   final GlobalKey _bubbleKey = GlobalKey();
-
-  late AnimationController _controller;
-  late Animation<double> _animation;
   Offset? _bubbleOffset = Offset.zero;
   BubbleDirection? _finalDirection;
   double? _arrowOffset;
@@ -171,20 +211,7 @@ class _BubblePopupWidgetState extends State<_BubblePopupWidget>
   void initState() {
     super.initState();
     _finalDirection = widget.direction;
-    _initializeAnimation();
     _schedulePositionCalculation();
-  }
-
-  void _initializeAnimation() {
-    _controller = AnimationController(
-      duration: _kPopupDuration,
-      vsync: this,
-    );
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.fastOutSlowIn,
-    );
-    _controller.forward();
   }
 
   void _schedulePositionCalculation() {
@@ -196,9 +223,51 @@ class _BubblePopupWidgetState extends State<_BubblePopupWidget>
   }
 
   @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+  Widget build(BuildContext context) {
+    final CurveTween opacity =
+        CurveTween(curve: const Interval(0.0, 1.0 / 3.0));
+    final CurveTween width =
+        CurveTween(curve: Interval(0.0, 1.0));
+    final CurveTween height =
+        CurveTween(curve: Interval(0.0, 1.0));
+
+    return Stack(
+      children: [
+        if (_bubbleOffset != null && _finalDirection != null) ...[
+          Positioned(
+              key: _bubbleKey,
+              left: _bubbleOffset!.dx,
+              top: _bubbleOffset!.dy,
+              child: AnimatedBuilder(
+                animation: widget.route.animation!,
+                builder: (BuildContext context, Widget? child) {
+                  return FadeTransition(
+                    opacity: opacity.animate(widget.route.animation!),
+                    child: BubbleContainer(
+                      borderRadius: widget.radius,
+                      border: widget.border,
+                      shadows: widget.shadows,
+                      padding: widget.padding,
+                      color: widget.color,
+                      showArrow: widget.showArrow,
+                      arrowWidth: widget.arrowWidth,
+                      arrowHeight: widget.arrowHeight,
+                      arrowRadius: widget.arrowRadius,
+                      arrowOffset: _arrowOffset,
+                      arrowDirection: bubbleToArrow(_finalDirection!),
+                      child: Material(
+                        color: widget.color,
+                        type: MaterialType.card,
+                        child: child,
+                      ),
+                    ),
+                  );
+                },
+                child: widget.bubbleChild,
+              ))
+        ],
+      ],
+    );
   }
 
   void _calculatePosition() {
@@ -384,41 +453,5 @@ class _BubblePopupWidgetState extends State<_BubblePopupWidget>
         break;
     }
     return arrowDirection;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        if (_bubbleOffset != null && _finalDirection != null) ...[
-          Positioned(
-            key: _bubbleKey,
-            left: _bubbleOffset!.dx,
-            top: _bubbleOffset!.dy,
-            child: FadeTransition(
-              opacity: _animation,
-              child: BubbleContainer(
-                borderRadius: widget.radius,
-                border: widget.border,
-                shadows: widget.shadows,
-                padding: widget.padding,
-                color: widget.color,
-                showArrow: widget.showArrow,
-                arrowWidth: widget.arrowWidth,
-                arrowHeight: widget.arrowHeight,
-                arrowRadius: widget.arrowRadius,
-                arrowOffset: _arrowOffset,
-                arrowDirection: bubbleToArrow(_finalDirection!),
-                child: Material(
-                  color: Colors.transparent,
-                  type: MaterialType.transparency,
-                  child: widget.bubbleChild,
-                ),
-              ),
-            ),
-          )
-        ],
-      ],
-    );
   }
 }
