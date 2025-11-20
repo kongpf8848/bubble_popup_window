@@ -1,7 +1,9 @@
 import 'package:bubble_popup_window/bubble_popup_window.dart';
+import 'package:bubble_popup_window/src/buble_animation_style.dart';
 import 'package:flutter/material.dart';
 
 const Duration _kPopupDuration = Duration(milliseconds: 300);
+const double _kPopupCloseIntervalEnd = 2.0 / 3.0;
 
 class BubblePopupWindow {
   static void show({
@@ -29,6 +31,8 @@ class BubblePopupWindow {
     Color? maskColor,
     //点击弹窗外部时是否自动关闭弹窗
     bool dismissOnTouchOutside = true,
+    //弹窗动画
+    BubbleAnimationStyle? animationStyle,
     //是否显示箭头
     bool showArrow = true,
     //箭头宽度
@@ -57,6 +61,7 @@ class BubblePopupWindow {
 
     Navigator.of(anchorContext).push(
       _BubblePopupRoute(
+        animationStyle: animationStyle,
         maskColor: maskColor,
         dismissOnTouchOutside: dismissOnTouchOutside,
         child: bubbleWidget,
@@ -67,11 +72,13 @@ class BubblePopupWindow {
 
 //气泡弹窗路由
 class _BubblePopupRoute<T> extends PopupRoute<T> {
+  final BubbleAnimationStyle? animationStyle;
   final Color? maskColor;
   final bool dismissOnTouchOutside;
   final Widget child;
 
   _BubblePopupRoute({
+    required this.animationStyle,
     required this.maskColor,
     required this.dismissOnTouchOutside,
     required this.child,
@@ -87,7 +94,21 @@ class _BubblePopupRoute<T> extends PopupRoute<T> {
   bool get barrierDismissible => dismissOnTouchOutside;
 
   @override
-  Duration get transitionDuration => _kPopupDuration;
+  Duration get transitionDuration =>
+      animationStyle?.duration ?? _kPopupDuration;
+
+  @override
+  Animation<double> createAnimation() {
+    if (animationStyle != BubbleAnimationStyle.noAnimation) {
+      return CurvedAnimation(
+        parent: super.createAnimation(),
+        curve: animationStyle?.curve ?? Curves.bounceOut,
+        reverseCurve: animationStyle?.reverseCurve ??
+            const Interval(0.0, _kPopupCloseIntervalEnd),
+      );
+    }
+    return super.createAnimation();
+  }
 
   @override
   Widget buildPage(BuildContext context, Animation<double> animation,
