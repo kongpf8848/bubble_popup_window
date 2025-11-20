@@ -75,9 +75,9 @@ class BubbleContainer extends StatelessWidget {
       transformAlignment: transformAlignment,
       clipBehavior: clipBehavior,
       padding: bubblePadding.add(padding ?? EdgeInsets.zero),
-      decoration: showArrow
-          ? ShapeDecoration(
-              shape: BubbleShapeBorder(
+      decoration: ShapeDecoration(
+        shape: showArrow
+            ? BubbleShapeBorder(
                 side: border ?? BorderSide.none,
                 borderRadius: borderRadius ?? BorderRadius.zero,
                 arrowDirection: arrowDirection,
@@ -85,23 +85,14 @@ class BubbleContainer extends StatelessWidget {
                 arrowHeight: arrowHeight,
                 arrowRadius: arrowRadius,
                 arrowOffset: arrowOffset,
+              )
+            : RoundedRectangleBorder(
+                side: border ?? BorderSide.none,
+                borderRadius: borderRadius ?? BorderRadius.zero,
               ),
-              shadows: shadows,
-              color: color,
-            )
-          : BoxDecoration(
-              color: color,
-              border: border != null
-                  ? Border.all(
-                      width: border!.width,
-                      color: border!.color,
-                      style: border!.style,
-                      strokeAlign: border!.strokeAlign,
-                    )
-                  : null,
-              borderRadius: borderRadius,
-              boxShadow: shadows,
-            ),
+        shadows: shadows,
+        color: color,
+      ),
       child: child,
     );
   }

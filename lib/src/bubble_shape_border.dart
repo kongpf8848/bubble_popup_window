@@ -303,9 +303,9 @@ class BubbleShapeBorder extends OutlinedBorder {
         if (side.width > 0.0) {
           var outerPath = getOuterPath(rect);
           var innerPath = getInnerPath(rect);
-          innerPath.fillType = PathFillType.evenOdd;
           Path path =
               Path.combine(PathOperation.difference, outerPath, innerPath);
+          path.fillType = PathFillType.evenOdd;
           final Paint paint = Paint()
             ..color = side.color
             ..style = PaintingStyle.fill;
