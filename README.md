@@ -26,7 +26,7 @@
 
 ```yaml
 dependencies:
-  bubble_popup_window: ^0.0.5
+  bubble_popup_window: ^0.0.6
 ```
 
 ## 使用
@@ -90,7 +90,28 @@ void _showToolTip(BuildContext anchorContext) {
 }
 
 ```
+anchorContext 用于确定锚点的位置和尺寸，可通过以下方式获取：
+- ‌使用GlobalKey
+  为组件设置GlobalKey后，通过 key.currentContext!获取上下文
+  ```dart
+  GlobalKey key = GlobalKey();
+  ElevatedButton(
+    key: key,
+  )
+  ```
+  //获取上下文
+  BuildContext anchorContext = key.currentContext!;
 
+- 使用Builder组件
+  通过Builder组件的回调函数直接获取anchorContext
+  ```dart
+  Builder(
+    builder: (BuildContext anchorContext) {
+      // 在此使用 anchorContext
+      return Container();
+    }
+  )
+  ```
 ## 参数说明
 
 | 参数名                     | 类型                    | 默认值                            | 描述           |

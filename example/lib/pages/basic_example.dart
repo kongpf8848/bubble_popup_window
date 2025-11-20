@@ -390,7 +390,7 @@ class _BasicExampleState extends State<BasicExample> {
 
   Widget _button() {
     return Builder(
-      builder: (anchorContext) {
+      builder: (BuildContext anchorContext) {
         return GestureDetector(
           onTap: () {
             _showBubblePopup(anchorContext);
