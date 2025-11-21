@@ -31,6 +31,8 @@ class BubblePopupWindow {
     Color? maskColor,
     //点击弹窗外部时是否自动关闭弹窗
     bool dismissOnTouchOutside = true,
+    //弹窗动画
+    BubbleAnimationStyle animationStyle = const BubbleAnimationStyle(),
     //是否显示箭头
     bool showArrow = true,
     //箭头宽度
@@ -54,7 +56,7 @@ class BubblePopupWindow {
         miniEdgeMargin,
         maskColor,
         dismissOnTouchOutside,
-        null,
+        animationStyle,
         showArrow,
         arrowWidth,
         arrowHeight,
@@ -78,7 +80,7 @@ class _BubblePopupRoute<T> extends PopupRoute<T> {
   final EdgeInsets miniEdgeMargin;
   final Color? maskColor;
   final bool dismissOnTouchOutside;
-  final BubbleAnimationStyle? animationStyle;
+  final BubbleAnimationStyle animationStyle;
 
   final bool showArrow;
   final double arrowWidth;
@@ -121,11 +123,11 @@ class _BubblePopupRoute<T> extends PopupRoute<T> {
 
   @override
   Animation<double> createAnimation() {
-    if (animationStyle != BubbleAnimationStyle.noAnimation) {
+    if (animationStyle.type != BubbleAnimationType.custom) {
       return CurvedAnimation(
         parent: super.createAnimation(),
-        curve: animationStyle?.curve ?? Curves.linear,
-        reverseCurve: animationStyle?.reverseCurve ??
+        curve: animationStyle.curve,
+        reverseCurve: animationStyle.reverseCurve ??
             const Interval(0.0, _kPopupCloseIntervalEnd),
       );
     }
@@ -222,9 +224,6 @@ class _BubblePopupWidgetState extends State<_BubblePopupWidget>
 
   @override
   Widget build(BuildContext context) {
-    final CurveTween opacity =
-        CurveTween(curve: const Interval(0.0, 1.0 / 3.0));
-
     return Stack(
       children: [
         if (_bubbleOffset != null && _finalDirection != null) ...[
@@ -235,32 +234,56 @@ class _BubblePopupWidgetState extends State<_BubblePopupWidget>
               child: AnimatedBuilder(
                 animation: widget.route.animation!,
                 builder: (BuildContext context, Widget? child) {
-                  return FadeTransition(
-                    opacity: opacity.animate(widget.route.animation!),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: BubbleContainer(
-                        borderRadius: widget.radius,
-                        border: widget.border,
-                        shadows: widget.shadows,
-                        padding: widget.padding,
-                        color: widget.color,
-                        showArrow: widget.showArrow,
-                        arrowWidth: widget.arrowWidth,
-                        arrowHeight: widget.arrowHeight,
-                        arrowRadius: widget.arrowRadius,
-                        arrowOffset: _arrowOffset,
-                        arrowDirection: _bubbleToArrow(_finalDirection!),
-                        child: child,
-                      ),
-                    ),
-                  );
+                  return _buildAnimatedPopup(child);
                 },
                 child: widget.bubbleChild,
               ))
         ],
       ],
     );
+  }
+
+  Widget _buildPopupContent(Widget? child) {
+    return Material(
+      color: Colors.transparent,
+      child: BubbleContainer(
+        borderRadius: widget.radius,
+        border: widget.border,
+        shadows: widget.shadows,
+        padding: widget.padding,
+        color: widget.color,
+        showArrow: widget.showArrow,
+        arrowWidth: widget.arrowWidth,
+        arrowHeight: widget.arrowHeight,
+        arrowRadius: widget.arrowRadius,
+        arrowOffset: _arrowOffset,
+        arrowDirection: _bubbleToArrow(_finalDirection!),
+        child: child,
+      ),
+    );
+  }
+
+  Widget _buildAnimatedPopup(Widget? child) {
+    final animation = widget.route.animation!;
+    switch (widget.route.animationStyle.type) {
+      case BubbleAnimationType.fade:
+        return FadeTransition(
+          opacity: CurveTween(
+            curve: const Interval(0.0, 1.0 / 3.0),
+          ).animate(animation),
+          child: _buildPopupContent(child),
+        );
+      case BubbleAnimationType.scale:
+        return ScaleTransition(
+          scale: CurvedAnimation(
+            parent: animation,
+            curve: widget.route.animationStyle.curve,
+          ),
+          child: _buildPopupContent(child),
+        );
+      case BubbleAnimationType.custom:
+        return _buildPopupContent(child);
+    }
   }
 
   void _calculatePosition() {

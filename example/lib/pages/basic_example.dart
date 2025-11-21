@@ -37,6 +37,7 @@ class _BasicExampleState extends State<BasicExample> {
   Color _maskColor = Colors.transparent;
   Color? _borderColor;
   BubbleDirection _direction = BubbleDirection.bottomCenter;
+  BubbleAnimationStyle _animationStyle = BubbleAnimationStyle.fade;
   bool _showArrow = true;
   bool _showBorder = false;
   double _borderWidth = 1.0;
@@ -204,6 +205,40 @@ class _BasicExampleState extends State<BasicExample> {
                     ),
                   );
                 }),
+              )
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Row(
+            children: [
+              const Text(
+                "弹窗动画效果:",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                ),
+              ),
+              const Spacer(),
+              DropdownMenu<BubbleAnimationStyle>(
+                width: 200,
+                initialSelection: _animationStyle,
+                onSelected: (BubbleAnimationStyle? animationStyle) {
+                  setState(() {
+                    _animationStyle = animationStyle!;
+                  });
+                },
+                dropdownMenuEntries: [
+                  BubbleAnimationStyle.fade,
+                  BubbleAnimationStyle.scale
+                ].map<DropdownMenuEntry<BubbleAnimationStyle>>(
+                    (BubbleAnimationStyle style) {
+                  return DropdownMenuEntry(
+                    value: style,
+                    label: style.type.name,
+                  );
+                }).toList(),
               )
             ],
           ),
@@ -472,6 +507,7 @@ class _BasicExampleState extends State<BasicExample> {
       radius: BorderRadius.circular(_radius),
       showArrow: _showArrow,
       dismissOnTouchOutside: _dismissOnTouchOutside,
+      animationStyle: _animationStyle,
       shadows: [
         BoxShadow(
           blurRadius: 6,
