@@ -1,6 +1,6 @@
 name: bubble_popup_window
 description: "A Flutter Bubble popup library, providing floating popup components with arrow indicators."
-version: 0.0.7
+version: 0.0.8
 homepage: https://github.com/kongpf8848/bubble_popup_window
 topics:
   - popup

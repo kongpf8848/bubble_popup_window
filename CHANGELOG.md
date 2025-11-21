@@ -1,3 +1,6 @@
+## 0.0.8
+add popup animation
+
 ## 0.0.7
 fix bug
 

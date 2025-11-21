@@ -26,7 +26,7 @@
 
 ```yaml
 dependencies:
-  bubble_popup_window: ^0.0.7
+  bubble_popup_window: ^0.0.8
 ```
 
 ## 使用
