@@ -1,5 +1,4 @@
 import 'package:bubble_popup_window/bubble_popup_window.dart';
-import 'package:bubble_popup_window/src/bubble_animation_style.dart';
 import 'package:flutter/material.dart';
 
 const Duration _kPopupDuration = Duration(milliseconds: 300);

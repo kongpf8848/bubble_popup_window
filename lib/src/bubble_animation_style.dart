@@ -1,5 +1,4 @@
 import 'package:flutter/animation.dart';
-import 'package:flutter/foundation.dart';
 
 enum BubbleAnimationType {
   fade, // 淡入淡出
