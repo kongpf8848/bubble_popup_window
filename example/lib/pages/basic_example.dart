@@ -76,7 +76,11 @@ class _BasicExampleState extends State<BasicExample> {
       mainAxisSize: MainAxisSize.min,
       children: [
         const SizedBox(
-          height: 20,
+          height: 80,
+        ),
+        _button(),
+        const SizedBox(
+          height: 12,
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -109,7 +113,7 @@ class _BasicExampleState extends State<BasicExample> {
           ),
         ),
         const SizedBox(
-          height: 10,
+          height: 12,
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -161,6 +165,9 @@ class _BasicExampleState extends State<BasicExample> {
             ],
           ),
         ),
+        const SizedBox(
+          height: 12,
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Row(
@@ -208,6 +215,9 @@ class _BasicExampleState extends State<BasicExample> {
               )
             ],
           ),
+        ),
+        const SizedBox(
+          height: 12,
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -417,11 +427,7 @@ class _BasicExampleState extends State<BasicExample> {
           },
         ),
         const SizedBox(
-          height: 10,
-        ),
-        _button(),
-        const SizedBox(
-          height: 150,
+          height: 20,
         ),
       ],
     ));
