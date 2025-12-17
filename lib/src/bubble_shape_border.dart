@@ -98,10 +98,13 @@ class BubbleShapeBorder extends OutlinedBorder {
     );
   }
 
-  //计算方向为：上、右、下、左
   Path _buildPath(Rect rect, bool isInner) {
-    final path = Path();
+    final rectPath = Path();
+    final arrowPath = Path();
+
     final nRect = _getRoundedRect(rect);
+    rectPath.addRRect(borderRadius.toRRect(nRect));
+
     var sideOffset = 0.0;
     if (arrowOffset != null) {
       sideOffset = isInner ? -side.strokeInset : side.strokeOutset;
@@ -109,9 +112,6 @@ class BubbleShapeBorder extends OutlinedBorder {
 
     final arrowProp = _calculateArrowProperties();
 
-    path.moveTo(nRect.left + borderRadius.topLeft.x, nRect.top);
-
-    //top arrow
     if (arrowDirection == ArrowDirection.top) {
       Offset pointCenter = Offset(
           nRect.left + (arrowOffset ?? nRect.width / 2) + sideOffset,
@@ -126,9 +126,9 @@ class BubbleShapeBorder extends OutlinedBorder {
       Offset pointStartArcEnd = Offset(
           pointStart.dx + arrowProp.projectionOnMain,
           pointStart.dy - arrowProp.projectionOnCross);
-      path.lineTo(pointStartArcBegin.dx, pointStartArcBegin.dy);
-      path.quadraticBezierTo(pointStart.dx, pointStart.dy, pointStartArcEnd.dx,
-          pointStartArcEnd.dy);
+      arrowPath.moveTo(pointStartArcBegin.dx, pointStartArcBegin.dy);
+      arrowPath.quadraticBezierTo(pointStart.dx, pointStart.dy,
+          pointStartArcEnd.dx, pointStartArcEnd.dy);
 
       Offset pointArrowArcBegin = Offset(
           pointArrow.dx - arrowProp.arrowProjectionOnMain,
@@ -136,29 +136,17 @@ class BubbleShapeBorder extends OutlinedBorder {
       Offset pointArrowArcEnd = Offset(
           pointArrow.dx + arrowProp.arrowProjectionOnMain,
           pointArrow.dy + arrowProp.topLen);
-      path.lineTo(pointArrowArcBegin.dx, pointArrowArcBegin.dy);
-      path.quadraticBezierTo(pointArrow.dx, pointArrow.dy, pointArrowArcEnd.dx,
-          pointArrowArcEnd.dy);
+      arrowPath.lineTo(pointArrowArcBegin.dx, pointArrowArcBegin.dy);
+      arrowPath.quadraticBezierTo(pointArrow.dx, pointArrow.dy,
+          pointArrowArcEnd.dx, pointArrowArcEnd.dy);
 
       Offset pointEndArcBegin = Offset(pointEnd.dx - arrowProp.projectionOnMain,
           pointEnd.dy - arrowProp.projectionOnCross);
       Offset pointEndArcEnd = Offset(pointEnd.dx + arrowRadius, pointEnd.dy);
-      path.lineTo(pointEndArcBegin.dx, pointEndArcBegin.dy);
-      path.quadraticBezierTo(
+      arrowPath.lineTo(pointEndArcBegin.dx, pointEndArcBegin.dy);
+      arrowPath.quadraticBezierTo(
           pointEnd.dx, pointEnd.dy, pointEndArcEnd.dx, pointEndArcEnd.dy);
-    }
-
-    path.lineTo(nRect.right - borderRadius.topRight.x, nRect.top);
-
-    // topRight radius
-    path.arcToPoint(
-      Offset(nRect.right, nRect.top + borderRadius.topRight.y),
-      radius: borderRadius.topRight,
-      rotation: 90,
-    );
-
-    //right arrow
-    if (arrowDirection == ArrowDirection.right) {
+    } else if (arrowDirection == ArrowDirection.right) {
       Offset pointCenter = Offset(nRect.right,
           nRect.top + (arrowOffset ?? nRect.height / 2) + sideOffset);
       Offset pointStart =
@@ -172,38 +160,26 @@ class BubbleShapeBorder extends OutlinedBorder {
       Offset pointStartArcEnd = Offset(
           pointStart.dx + arrowProp.projectionOnCross,
           pointStart.dy + arrowProp.projectionOnMain);
-      path.lineTo(pointStartArcBegin.dx, pointStartArcBegin.dy);
-      path.quadraticBezierTo(pointStart.dx, pointStart.dy, pointStartArcEnd.dx,
-          pointStartArcEnd.dy);
+      arrowPath.moveTo(pointStartArcBegin.dx, pointStartArcBegin.dy);
+      arrowPath.quadraticBezierTo(pointStart.dx, pointStart.dy,
+          pointStartArcEnd.dx, pointStartArcEnd.dy);
 
       Offset pointArrowArcBegin = Offset(pointArrow.dx - arrowProp.topLen,
           pointArrow.dy - arrowProp.arrowProjectionOnMain);
       Offset pointArrowArcEnd = Offset(pointArrow.dx - arrowProp.topLen,
           pointArrow.dy + arrowProp.arrowProjectionOnMain);
-      path.lineTo(pointArrowArcBegin.dx, pointArrowArcBegin.dy);
-      path.quadraticBezierTo(pointArrow.dx, pointArrow.dy, pointArrowArcEnd.dx,
-          pointArrowArcEnd.dy);
+      arrowPath.lineTo(pointArrowArcBegin.dx, pointArrowArcBegin.dy);
+      arrowPath.quadraticBezierTo(pointArrow.dx, pointArrow.dy,
+          pointArrowArcEnd.dx, pointArrowArcEnd.dy);
 
       Offset pointEndArcBegin = Offset(
           pointEnd.dx + arrowProp.projectionOnCross,
           pointEnd.dy - arrowProp.projectionOnMain);
       Offset pointEndArcEnd = Offset(pointEnd.dx, pointEnd.dy + arrowRadius);
-      path.lineTo(pointEndArcBegin.dx, pointEndArcBegin.dy);
-      path.quadraticBezierTo(
+      arrowPath.lineTo(pointEndArcBegin.dx, pointEndArcBegin.dy);
+      arrowPath.quadraticBezierTo(
           pointEnd.dx, pointEnd.dy, pointEndArcEnd.dx, pointEndArcEnd.dy);
-    }
-
-    path.lineTo(nRect.right, nRect.bottom - borderRadius.bottomRight.y);
-
-    // bottomRight radius
-    path.arcToPoint(
-      Offset(nRect.right - borderRadius.bottomRight.x, nRect.bottom),
-      radius: borderRadius.bottomRight,
-      rotation: 90,
-    );
-
-    //bottom arrow
-    if (arrowDirection == ArrowDirection.bottom) {
+    } else if (arrowDirection == ArrowDirection.bottom) {
       Offset pointCenter = Offset(
           nRect.left + (arrowOffset ?? nRect.width / 2) + sideOffset,
           nRect.bottom);
@@ -218,9 +194,9 @@ class BubbleShapeBorder extends OutlinedBorder {
       Offset pointStartArcEnd = Offset(
           pointStart.dx - arrowProp.projectionOnMain,
           pointStart.dy + arrowProp.projectionOnCross);
-      path.lineTo(pointStartArcBegin.dx, pointStartArcBegin.dy);
-      path.quadraticBezierTo(pointStart.dx, pointStart.dy, pointStartArcEnd.dx,
-          pointStartArcEnd.dy);
+      arrowPath.moveTo(pointStartArcBegin.dx, pointStartArcBegin.dy);
+      arrowPath.quadraticBezierTo(pointStart.dx, pointStart.dy,
+          pointStartArcEnd.dx, pointStartArcEnd.dy);
 
       Offset pointArrowArcBegin = Offset(
           pointArrow.dx + arrowProp.arrowProjectionOnMain,
@@ -228,29 +204,17 @@ class BubbleShapeBorder extends OutlinedBorder {
       Offset pointArrowArcEnd = Offset(
           pointArrow.dx - arrowProp.arrowProjectionOnMain,
           pointArrow.dy - arrowProp.topLen);
-      path.lineTo(pointArrowArcBegin.dx, pointArrowArcBegin.dy);
-      path.quadraticBezierTo(pointArrow.dx, pointArrow.dy, pointArrowArcEnd.dx,
-          pointArrowArcEnd.dy);
+      arrowPath.lineTo(pointArrowArcBegin.dx, pointArrowArcBegin.dy);
+      arrowPath.quadraticBezierTo(pointArrow.dx, pointArrow.dy,
+          pointArrowArcEnd.dx, pointArrowArcEnd.dy);
 
       Offset pointEndArcBegin = Offset(pointEnd.dx + arrowProp.projectionOnMain,
           pointEnd.dy + arrowProp.projectionOnCross);
       Offset pointEndArcEnd = Offset(pointEnd.dx - arrowRadius, pointEnd.dy);
-      path.lineTo(pointEndArcBegin.dx, pointEndArcBegin.dy);
-      path.quadraticBezierTo(
+      arrowPath.lineTo(pointEndArcBegin.dx, pointEndArcBegin.dy);
+      arrowPath.quadraticBezierTo(
           pointEnd.dx, pointEnd.dy, pointEndArcEnd.dx, pointEndArcEnd.dy);
-    }
-
-    path.lineTo(nRect.left + borderRadius.bottomLeft.x, nRect.bottom);
-
-    // bottomLeft radius
-    path.arcToPoint(
-      Offset(nRect.left, nRect.bottom - borderRadius.bottomLeft.y),
-      radius: borderRadius.bottomLeft,
-      rotation: 90,
-    );
-
-    // left arrow
-    if (arrowDirection == ArrowDirection.left) {
+    } else if (arrowDirection == ArrowDirection.left) {
       Offset pointCenter = Offset(nRect.left,
           nRect.top + (arrowOffset ?? nRect.height / 2) + sideOffset);
       Offset pointStart =
@@ -264,37 +228,28 @@ class BubbleShapeBorder extends OutlinedBorder {
       Offset pointStartArcEnd = Offset(
           pointStart.dx - arrowProp.projectionOnCross,
           pointStart.dy - arrowProp.projectionOnMain);
-      path.lineTo(pointStartArcBegin.dx, pointStartArcBegin.dy);
-      path.quadraticBezierTo(pointStart.dx, pointStart.dy, pointStartArcEnd.dx,
-          pointStartArcEnd.dy);
+      arrowPath.moveTo(pointStartArcBegin.dx, pointStartArcBegin.dy);
+      arrowPath.quadraticBezierTo(pointStart.dx, pointStart.dy,
+          pointStartArcEnd.dx, pointStartArcEnd.dy);
 
       Offset pointArrowArcBegin = Offset(pointArrow.dx + arrowProp.topLen,
           pointArrow.dy + arrowProp.arrowProjectionOnMain);
       Offset pointArrowArcEnd = Offset(pointArrow.dx + arrowProp.topLen,
           pointArrow.dy - arrowProp.arrowProjectionOnMain);
-      path.lineTo(pointArrowArcBegin.dx, pointArrowArcBegin.dy);
-      path.quadraticBezierTo(pointArrow.dx, pointArrow.dy, pointArrowArcEnd.dx,
-          pointArrowArcEnd.dy);
+      arrowPath.lineTo(pointArrowArcBegin.dx, pointArrowArcBegin.dy);
+      arrowPath.quadraticBezierTo(pointArrow.dx, pointArrow.dy,
+          pointArrowArcEnd.dx, pointArrowArcEnd.dy);
 
       Offset pointEndArcBegin = Offset(
           pointEnd.dx - arrowProp.projectionOnCross,
           pointEnd.dy + arrowProp.projectionOnMain);
       Offset pointEndArcEnd = Offset(pointEnd.dx, pointEnd.dy - arrowRadius);
-      path.lineTo(pointEndArcBegin.dx, pointEndArcBegin.dy);
-      path.quadraticBezierTo(
+      arrowPath.lineTo(pointEndArcBegin.dx, pointEndArcBegin.dy);
+      arrowPath.quadraticBezierTo(
           pointEnd.dx, pointEnd.dy, pointEndArcEnd.dx, pointEndArcEnd.dy);
     }
 
-    path.lineTo(nRect.left, nRect.top + borderRadius.topLeft.y);
-
-    //topLeft radius
-    path.arcToPoint(
-      Offset(nRect.left + borderRadius.topLeft.x, nRect.top),
-      radius: borderRadius.topLeft,
-      rotation: 90,
-    );
-
-    return path;
+    return Path.combine(PathOperation.union, rectPath, arrowPath);
   }
 
   @override
