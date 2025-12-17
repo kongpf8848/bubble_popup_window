@@ -26,7 +26,7 @@
 
 ```yaml
 dependencies:
-  bubble_popup_window: ^0.0.8
+  bubble_popup_window: ^0.0.9
 ```
 
 ## 使用
@@ -48,6 +48,14 @@ void _showToolTip(BuildContext anchorContext) {
   BubblePopupWindow.show(
     //锚点上下文
     anchorContext: anchorContext,
+    //弹窗打开回调
+    onPopupOpened: (){
+      debugPrint("+++++++++++++++++onPopupOpened");
+    },
+    //弹窗关闭回调
+    onPopupClosed: (){
+      debugPrint("+++++++++++++++++onPopupClosed");
+    },
     //弹窗布局，用户自定义
     child: const Text(
       '这是一个气泡弹窗',
@@ -122,6 +130,8 @@ anchorContext 用于确定锚点的位置和尺寸，可通过以下方式获取
 | 参数名                     | 类型                    | 默认值                            | 描述           |
 |:------------------------|:----------------------|:-------------------------------|:-------------|
 | `anchorContext`         | `BuildContext`        | 无                              | 锚点上下文        |
+| `onPopupOpened`         | `VoidCallback?`       | 无                              | 弹窗打开回调        |
+| `onPopupClosed`         | `VoidCallback?`       | 无                              | 弹窗关闭回调        |
 | `child`                 | `Widget`              | 无                              | 弹窗内容，用户自定义   |
 | `direction`             | `BubbleDirection`     | `BubbleDirection.bottomCenter` | 弹窗方向         |
 | `color`                 | `Color`               | `Colors.white`                 | 弹窗颜色         |

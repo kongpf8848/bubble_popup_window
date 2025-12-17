@@ -499,6 +499,12 @@ class _BasicExampleState extends State<BasicExample> {
     }
     BubblePopupWindow.show(
       anchorContext: context,
+      onPopupOpened: (){
+        debugPrint("+++++++++++++++++onPopupOpened");
+      },
+      onPopupClosed: (){
+        debugPrint("+++++++++++++++++onPopupClosed");
+      },
       miniEdgeMargin: const EdgeInsets.only(left: 10, right: 10),
       direction: _direction,
       color: _color,

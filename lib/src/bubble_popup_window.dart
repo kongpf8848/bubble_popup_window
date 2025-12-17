@@ -5,9 +5,13 @@ const Duration _kPopupDuration = Duration(milliseconds: 300);
 const double _kPopupCloseIntervalEnd = 2.0 / 3.0;
 
 class BubblePopupWindow {
-  static void show({
+  static Future<T?> show<T extends Object?>({
     //锚点上下文
     required BuildContext anchorContext,
+    //弹窗打开回调
+    VoidCallback? onPopupOpened,
+    //弹窗关闭回调
+    VoidCallback? onPopupClosed,
     //弹窗布局，用户自定义
     required Widget child,
     //弹窗方向
@@ -41,27 +45,32 @@ class BubblePopupWindow {
     //箭头半径
     double arrowRadius = 0.0,
   }) {
-    Navigator.of(anchorContext).push(
-      _BubblePopupRoute(
-        anchorContext,
-        child,
-        direction,
-        color,
-        radius,
-        border,
-        shadows,
-        padding,
-        gap,
-        miniEdgeMargin,
-        maskColor,
-        dismissOnTouchOutside,
-        animationStyle,
-        showArrow,
-        arrowWidth,
-        arrowHeight,
-        arrowRadius,
-      ),
+    var popScope = PopScope(
+      onPopInvoked: (bool didPop) {
+        onPopupClosed?.call();
+      },
+      child: child,
     );
+    onPopupOpened?.call();
+    return Navigator.of(anchorContext).push(_BubblePopupRoute<T>(
+      anchorContext,
+      popScope,
+      direction,
+      color,
+      radius,
+      border,
+      shadows,
+      padding,
+      gap,
+      miniEdgeMargin,
+      maskColor,
+      dismissOnTouchOutside,
+      animationStyle,
+      showArrow,
+      arrowWidth,
+      arrowHeight,
+      arrowRadius,
+    ));
   }
 }
 

@@ -236,8 +236,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Builder(builder: (anchorContext) {
               return ElevatedButton(
-                onPressed: () {
-                  _showBubble(anchorContext);
+                onPressed: () {_showBubble(anchorContext);
                 },
                 child: const Text("ToolTip"),
               );
@@ -278,6 +277,14 @@ class _MyHomePageState extends State<MyHomePage> {
     BubblePopupWindow.show(
       //锚点上下文
       anchorContext: anchorContext,
+      //弹窗打开回调
+      onPopupOpened: (){
+        debugPrint("+++++++++++++++++onPopupOpened");
+      },
+      //弹窗关闭回调
+      onPopupClosed: (){
+         debugPrint("+++++++++++++++++onPopupClosed");
+      },
       //弹窗布局，用户自定义
       child: const Text(
         '这是一个气泡弹窗',

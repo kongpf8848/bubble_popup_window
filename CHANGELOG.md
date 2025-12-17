@@ -1,3 +1,6 @@
+## 0.0.9
+add popup open/close callback
+
 ## 0.0.8
 add popup animation
 
