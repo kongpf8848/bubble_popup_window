@@ -2,24 +2,50 @@ import 'package:bubble_popup_window/bubble_popup_window.dart';
 import 'package:example/pages/complex_example.dart';
 import 'package:flutter/material.dart';
 import 'package:example/pages/basic_example.dart';
+import 'package:go_router/go_router.dart';
 
 void main() {
   runApp(const MyApp());
 }
+
+final GoRouter _router = GoRouter(
+  routes: <RouteBase>[
+    GoRoute(
+      path: '/',
+      builder: (BuildContext context, GoRouterState state) {
+        return const MyHomePage(title: 'Bubble PopupWindow Demo');
+      },
+      routes: <RouteBase>[
+        GoRoute(
+          path: 'basic_example',
+          builder: (BuildContext context, GoRouterState state) {
+            return const BasicExample();
+          },
+        ),
+        GoRoute(
+          path: 'complex_example',
+          builder: (BuildContext context, GoRouterState state) {
+            return const ComplexExample();
+          },
+        ),
+      ],
+    ),
+  ],
+);
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Bubble PopupWindow Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Bubble PopupWindow Demo'),
+      routerConfig: _router,
     );
   }
 }
@@ -236,7 +262,8 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Builder(builder: (anchorContext) {
               return ElevatedButton(
-                onPressed: () {_showBubble(anchorContext);
+                onPressed: () {
+                  _showBubble(anchorContext);
                 },
                 child: const Text("ToolTip"),
               );
@@ -246,11 +273,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (BuildContext context) {
-                    return const BasicExample();
-                  },
-                ));
+                context.go('/basic_example');
               },
               child: const Text("Basic Example"),
             ),
@@ -259,11 +282,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (BuildContext context) {
-                    return const ComplexExample();
-                  },
-                ));
+                context.go('/complex_example');
               },
               child: const Text("Complex Example"),
             ),
@@ -278,12 +297,12 @@ class _MyHomePageState extends State<MyHomePage> {
       //锚点上下文
       anchorContext: anchorContext,
       //弹窗打开回调
-      onPopupOpened: (){
+      onPopupOpened: () {
         debugPrint("+++++++++++++++++onPopupOpened");
       },
       //弹窗关闭回调
-      onPopupClosed: (){
-         debugPrint("+++++++++++++++++onPopupClosed");
+      onPopupClosed: () {
+        debugPrint("+++++++++++++++++onPopupClosed");
       },
       //弹窗布局，用户自定义
       child: const Text(
