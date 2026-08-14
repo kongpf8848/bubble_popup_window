@@ -44,6 +44,8 @@ class BubblePopupWindow {
     double arrowHeight = 5.0,
     //箭头半径
     double arrowRadius = 0.0,
+    //箭头颜色
+    Color? arrowColor,
   }) {
     var popScope = PopScope(
       onPopInvoked: (bool didPop) {
@@ -70,6 +72,7 @@ class BubblePopupWindow {
       arrowWidth,
       arrowHeight,
       arrowRadius,
+      arrowColor,
     ));
   }
 }
@@ -95,6 +98,7 @@ class _BubblePopupRoute<T> extends PopupRoute<T> {
 
   final double arrowHeight;
   final double arrowRadius;
+  final Color? arrowColor;
 
   _BubblePopupRoute(
     this.anchorContext,
@@ -114,6 +118,7 @@ class _BubblePopupRoute<T> extends PopupRoute<T> {
     this.arrowWidth,
     this.arrowHeight,
     this.arrowRadius,
+    this.arrowColor,
   );
 
   @override
@@ -161,6 +166,7 @@ class _BubblePopupRoute<T> extends PopupRoute<T> {
       arrowWidth: arrowWidth,
       arrowHeight: arrowHeight,
       arrowRadius: arrowRadius,
+      arrowColor: arrowColor,
     );
     return bubbleWidget;
   }
@@ -182,6 +188,7 @@ class _BubblePopupWidget<T> extends StatefulWidget {
   final double arrowWidth;
   final double arrowHeight;
   final double arrowRadius;
+  final Color? arrowColor;
 
   const _BubblePopupWidget({
     super.key,
@@ -200,6 +207,7 @@ class _BubblePopupWidget<T> extends StatefulWidget {
     required this.arrowWidth,
     required this.arrowHeight,
     required this.arrowRadius,
+    required this.arrowColor,
   });
 
   @override
@@ -264,6 +272,7 @@ class _BubblePopupWidgetState extends State<_BubblePopupWidget>
         arrowWidth: widget.arrowWidth,
         arrowHeight: widget.arrowHeight,
         arrowRadius: widget.arrowRadius,
+        arrowColor: widget.arrowColor,
         arrowOffset: _arrowOffset,
         arrowDirection: _bubbleToArrow(_finalDirection!),
         child: child,

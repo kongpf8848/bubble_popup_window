@@ -11,6 +11,7 @@ class BubbleContainer extends StatelessWidget {
   final double arrowHeight;
   final double? arrowOffset;
   final double arrowRadius;
+  final Color? arrowColor;
 
   final AlignmentGeometry? alignment;
   final EdgeInsetsGeometry? padding;
@@ -47,6 +48,7 @@ class BubbleContainer extends StatelessWidget {
     this.arrowHeight = 5.0,
     this.arrowRadius = 0.0,
     this.arrowOffset,
+    this.arrowColor,
   });
 
   @override
@@ -85,6 +87,7 @@ class BubbleContainer extends StatelessWidget {
                 arrowHeight: arrowHeight,
                 arrowRadius: arrowRadius,
                 arrowOffset: arrowOffset,
+                arrowColor: arrowColor,
               )
             : RoundedRectangleBorder(
                 side: border ?? BorderSide.none,

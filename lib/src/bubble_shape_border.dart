@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import '../bubble_popup_window.dart';
+
+import 'arrow_direction.dart';
 
 class _BubbleBorderArrowProperties {
   /// 箭头宽度的一半
@@ -38,6 +39,7 @@ class BubbleShapeBorder extends OutlinedBorder {
   final double arrowHeight;
   final double arrowRadius;
   final double? arrowOffset;
+  final Color? arrowColor;
 
   const BubbleShapeBorder({
     super.side,
@@ -47,6 +49,7 @@ class BubbleShapeBorder extends OutlinedBorder {
     this.arrowHeight = 5.0,
     this.arrowRadius = 0.0,
     this.arrowOffset,
+    this.arrowColor,
   });
 
   _BubbleBorderArrowProperties _calculateArrowProperties() {
@@ -98,12 +101,10 @@ class BubbleShapeBorder extends OutlinedBorder {
     );
   }
 
-  Path _buildPath(Rect rect, bool isInner) {
-    final rectPath = Path();
+  Path _buildArrowPath(Rect rect, bool isInner) {
     final arrowPath = Path();
 
     final nRect = _getRoundedRect(rect);
-    rectPath.addRRect(borderRadius.toRRect(nRect));
 
     var sideOffset = 0.0;
     if (arrowOffset != null) {
@@ -249,11 +250,29 @@ class BubbleShapeBorder extends OutlinedBorder {
           pointEnd.dx, pointEnd.dy, pointEndArcEnd.dx, pointEndArcEnd.dy);
     }
 
+    return arrowPath;
+  }
+
+  Path _buildPath(Rect rect, bool isInner) {
+    final rectPath = Path();
+    final nRect = _getRoundedRect(rect);
+    rectPath.addRRect(borderRadius.toRRect(nRect));
+
+    final arrowPath = _buildArrowPath(rect, isInner);
+
     return Path.combine(PathOperation.union, rectPath, arrowPath);
   }
 
   @override
   void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {
+    if (arrowColor != null) {
+      final arrowPath = _buildArrowPath(rect, false);
+      final Paint arrowPaint = Paint()
+        ..color = arrowColor!
+        ..style = PaintingStyle.fill;
+      canvas.drawPath(arrowPath, arrowPaint);
+    }
+
     switch (side.style) {
       case BorderStyle.none:
         break;
@@ -281,7 +300,7 @@ class BubbleShapeBorder extends OutlinedBorder {
     double? arrowHeight,
     double? arrowRadius,
     double? arrowOffset,
-    Color? fillColor,
+    Color? arrowColor,
   }) {
     return BubbleShapeBorder(
       side: side ?? this.side,
@@ -291,6 +310,7 @@ class BubbleShapeBorder extends OutlinedBorder {
       arrowHeight: arrowHeight ?? this.arrowHeight,
       arrowRadius: arrowRadius ?? this.arrowRadius,
       arrowOffset: arrowOffset ?? this.arrowOffset,
+      arrowColor: arrowColor ?? this.arrowColor,
     );
   }
 
@@ -304,6 +324,7 @@ class BubbleShapeBorder extends OutlinedBorder {
       arrowHeight: arrowHeight * t,
       arrowRadius: arrowRadius * t,
       arrowOffset: (arrowOffset ?? 0.0) * t,
+      arrowColor: arrowColor,
     );
   }
 
@@ -319,7 +340,8 @@ class BubbleShapeBorder extends OutlinedBorder {
         other.arrowHeight == arrowHeight &&
         other.arrowDirection == arrowDirection &&
         other.arrowRadius == arrowRadius &&
-        other.arrowOffset == arrowOffset;
+        other.arrowOffset == arrowOffset &&
+        other.arrowColor == arrowColor;
   }
 
   @override
@@ -331,5 +353,6 @@ class BubbleShapeBorder extends OutlinedBorder {
         arrowHeight,
         arrowRadius,
         arrowOffset,
+        arrowColor,
       );
 }

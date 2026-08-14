@@ -94,6 +94,8 @@ void _showToolTip(BuildContext anchorContext) {
     arrowHeight: 6.0,
     //箭头半径
     arrowRadius: 2.0,
+    //箭头颜色，为 null 时跟随弹窗颜色
+    arrowColor: Colors.red,
   );
 }
 
@@ -147,6 +149,7 @@ anchorContext 用于确定锚点的位置和尺寸，可通过以下方式获取
 | `arrowWidth`            | `Double`              | `10.0`                         | 箭头宽度         |
 | `arrowHeight`           | `Double`              | `5.0`                          | 箭头高度         |
 | `arrowRadius`           | `Double`              | `0.0`                          | 箭头半径         |
+| `arrowColor`            | `Color?`              | `null`                         | 箭头颜色，为空时跟随弹窗颜色 |
 
 
 ## 弹窗方向选项

@@ -21,6 +21,12 @@ class _BasicExampleState extends State<BasicExample> {
     "绿色": Colors.blue,
     "蓝色": Colors.green,
   };
+  final _arrowColorMap = {
+    "白色": Colors.white,
+    "红色": Colors.red,
+    "绿色": Colors.green,
+    "蓝色": Colors.blue,
+  };
 
   final _maskColorMap = {
     "透明": Colors.transparent,
@@ -36,6 +42,7 @@ class _BasicExampleState extends State<BasicExample> {
   Color _color = Colors.white;
   Color _maskColor = Colors.transparent;
   Color? _borderColor;
+  Color _arrowColor = Colors.white;
   BubbleDirection _direction = BubbleDirection.bottomCenter;
   BubbleAnimationStyle _animationStyle = BubbleAnimationStyle.fade;
   bool _showArrow = true;
@@ -411,6 +418,65 @@ class _BasicExampleState extends State<BasicExample> {
             });
           },
         ),
+        if (_showArrow)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              children: [
+                const Text(
+                  "箭头颜色:",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                  ),
+                ),
+                const Spacer(),
+                DropdownMenu<Color>(
+                  width: 200,
+                  initialSelection: _arrowColor,
+                  leadingIcon: SizedBox(
+                    width: 50,
+                    height: 50,
+                    child: Center(
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: _arrowColor,
+                          border: _arrowColor == Colors.white
+                              ? Border.all(color: Colors.grey)
+                              : null,
+                        ),
+                      ),
+                    ),
+                  ),
+                  onSelected: (Color? color) {
+                    setState(() {
+                      _arrowColor = color!;
+                    });
+                  },
+                  dropdownMenuEntries:
+                      List.generate(_arrowColorMap.length, (index) {
+                    final color = _arrowColorMap.values.elementAt(index);
+                    return DropdownMenuEntry(
+                      label: _arrowColorMap.keys.elementAt(index),
+                      value: color,
+                      leadingIcon: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: color,
+                          border: color == Colors.white
+                              ? Border.all(color: Colors.grey)
+                              : null,
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+              ],
+            ),
+          ),
         SwitchListTile(
           title: const Text(
             "点击弹窗外部是否关闭弹窗:",
@@ -518,6 +584,7 @@ class _BasicExampleState extends State<BasicExample> {
       gap: _gap,
       radius: BorderRadius.circular(_radius),
       showArrow: _showArrow,
+      arrowColor: _arrowColor,
       dismissOnTouchOutside: _dismissOnTouchOutside,
       animationStyle: _animationStyle,
       shadows: [
