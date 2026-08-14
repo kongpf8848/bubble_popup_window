@@ -1,3 +1,6 @@
+## 0.0.10
+add arrowColor property
+
 ## 0.0.9
 add popup open/close callback
 
